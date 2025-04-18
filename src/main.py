@@ -1,7 +1,13 @@
 from components.query_classifier import get_query_classifier_pipeline
 from haystack.components.routers import ConditionalRouter
-from haystack import Pipeline, component
+from haystack import Pipeline
 
+
+# TODO: rag_query -> rag_pipeline 
+# TODO: db_query -> db_tool 
+# TODO: generalQuery -> normal generator
+# TODO: tool_query -> tool  
+# TODO: tool_query + db query -> tool-using agent 
 
 def main():
     routes = [
@@ -50,9 +56,8 @@ def main():
     queries = [tool_query, rag_query, db_query, general_query]
     for query in queries:
         result = pipe.run({"classifier": {"query": query}})
-        result_list = list(result.get("router", {}).keys())
-        fmt_router_response = result_list
-        print(fmt_router_response)
+        result_list = result.get("router", {}).
+        print(result_list)
 
 
 if __name__ == "__main__":
