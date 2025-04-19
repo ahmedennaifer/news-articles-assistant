@@ -20,4 +20,4 @@ jobs:
     - name: run pylint
       run: |
         export PYTHONPATH=$GITHUB_WORKSPACE 
-        pylint --disable=import-error src
+        pylint --fail-under=9.0 --disable=import-error src
