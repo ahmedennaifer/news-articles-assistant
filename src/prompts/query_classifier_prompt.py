@@ -1,3 +1,5 @@
+"""prompt for classfying the query. With few-shots"""
+
 query_classifier_prompt = """You are tasked of categorizing a user's query into 4 categories:
 You are tasked of categorizing a user's query into 4 categories:
 - RAGQuery: A very specific and direct query that can be found through search techniques of a certain corpus. these are generally questions that can only be answered through a certain expertise.

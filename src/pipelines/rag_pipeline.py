@@ -1,44 +1,29 @@
-from haystack.components.writers.document_writer import DocumentWriter
-from haystack.components.retrievers import InMemoryEmbeddingRetriever
-from haystack.components.generators.openai import OpenAIGenerator
+"""main rag pipeline, still very naive"""
+
+from dotenv import load_dotenv
+from haystack import Document, Pipeline
 from haystack.components.builders.prompt_builder import PromptBuilder
-from haystack.document_stores.in_memory import InMemoryDocumentStore
-from haystack.components.embedders.hugging_face_api_document_embedder import (
-    HuggingFaceAPIDocumentEmbedder,
-)
 from haystack.components.embedders.hugging_face_api_text_embedder import (
     HuggingFaceAPITextEmbedder,
 )
-
-from haystack import Document, Pipeline
+from haystack.components.generators.openai import OpenAIGenerator
+from haystack.components.retrievers import InMemoryEmbeddingRetriever
+from haystack.document_stores.in_memory import InMemoryDocumentStore
 from haystack.utils import Secret
 
+from src.pipelines.index_pipeline import index
 from src.prompts.naive_rag import template
-
-from dotenv import load_dotenv
 
 load_dotenv()
 
 
-rag_paragraph = "A groundbreaking paper published in the Journal of Molecular Biology explores the intricate relationship between mitochondrial function and cellular aging. The researchers utilized advanced microscopy techniques to observe real-time changes in mitochondrial morphology as cells progress through their life cycle. Their findings suggest that specific proteins regulating mitochondrial fusion and fission play a crucial role in determining cellular lifespan, potentially offering new targets for age-related disease interventions. What makes this study particularly noteworthy is its novel approach to tracking individual mitochondria over extended periods, revealing previously unobserved patterns of deterioration that precede cellular senescence. The implications extend beyond basic research, pointing toward potential therapeutic strategies that could modify these pathways to promote cellular health and longevity in aging populations"
+RAG_PARAGRAPH = "A groundbreaking paper published in the Journal of Molecular Biology explores the intricate relationship between mitochondrial function and cellular aging. The researchers utilized advanced microscopy techniques to observe real-time changes in mitochondrial morphology as cells progress through their life cycle. Their findings suggest that specific proteins regulating mitochondrial fusion and fission play a crucial role in determining cellular lifespan, potentially offering new targets for age-related disease interventions. What makes this study particularly noteworthy is its novel approach to tracking individual mitochondria over extended periods, revealing previously unobserved patterns of deterioration that precede cellular senescence. The implications extend beyond basic research, pointing toward potential therapeutic strategies that could modify these pathways to promote cellular health and longevity in aging populations"
 
 
-def index(store, doc: Document) -> None:
-    doc_embedder = HuggingFaceAPIDocumentEmbedder(
-        api_type="serverless_inference_api",
-        api_params={"model": "sentence-transformers/all-MiniLM-L6-v2"},
-        token=Secret.from_env_var("HF_KEY"),
-    )
-    writer = DocumentWriter(store)
-    pipe = Pipeline()
-    pipe.add_component("embedder", doc_embedder)
-    pipe.add_component("writer", writer)
-    pipe.connect("embedder", "writer")
-    print("running index...")
-    pipe.run({"embedder": {"documents": [doc]}})
+def query_pipeline(store) -> Pipeline:
+    """returns the query pipeline, which returns the response of the llm according to the context given by the `store` through the retriver.
+    :param store: vector store which stores the embeddings of ours docs"""
 
-
-def query(store) -> Pipeline:
     text_embedder = HuggingFaceAPITextEmbedder(
         api_type="serverless_inference_api",
         api_params={"model": "sentence-transformers/all-MiniLM-L6-v2"},
@@ -63,22 +48,25 @@ def query(store) -> Pipeline:
     pipe.connect("text_embed.embedding", "retriever.query_embedding")
     pipe.connect("retriever.documents", "prompt.documents")
     pipe.connect("prompt", "llm")
-    print("count doc:", store.count_documents())
-    print("count doc:", store._avg_doc_len)
     return pipe
 
 
 def run_query_pipe(pipe: Pipeline, query: str) -> str:
+    """
+    runs the query pipeline and formats the response.
+    :param pipe: haystack `Pipeline`
+    :param query: question of the user
+    """
     res = pipe.run({"text_embed": {"text": query}, "prompt": {"query": query}})
     return res["llm"]["replies"][0]
 
 
 def main():
+    """testing"""
     store = InMemoryDocumentStore()
     rag_query = "What does the paper on biology talk about?"
-    rag_paragraph = "A groundbreaking paper published in the Journal of Molecular Biology explores the intricate relationship between mitochondrial function and cellular aging. The researchers utilized advanced microscopy techniques to observe real-time changes in mitochondrial morphology as cells progress through their life cycle. Their findings suggest that specific proteins regulating mitochondrial fusion and fission play a crucial role in determining cellular lifespan, potentially offering new targets for age-related disease interventions. What makes this study particularly noteworthy is its novel approach to tracking individual mitochondria over extended periods, revealing previously unobserved patterns of deterioration that precede cellular senescence. The implications extend beyond basic research, pointing toward potential therapeutic strategies that could modify these pathways to promote cellular health and longevity in aging populations"
-    index(store, Document(content=rag_paragraph))
-    pipe = query(store)
+    index(store, Document(content=RAG_PARAGRAPH))
+    pipe = query_pipeline(store)
     llm_answer = run_query_pipe(pipe, rag_query)
     print(llm_answer)
 
