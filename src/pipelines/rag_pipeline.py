@@ -14,12 +14,16 @@ from haystack import Document, Pipeline
 from haystack.utils import Secret
 
 from src.prompts.naive_rag import template
+
 from dotenv import load_dotenv
 
 load_dotenv()
 
 
-def index(store, rag_paragraph: Document) -> None:
+rag_paragraph = "A groundbreaking paper published in the Journal of Molecular Biology explores the intricate relationship between mitochondrial function and cellular aging. The researchers utilized advanced microscopy techniques to observe real-time changes in mitochondrial morphology as cells progress through their life cycle. Their findings suggest that specific proteins regulating mitochondrial fusion and fission play a crucial role in determining cellular lifespan, potentially offering new targets for age-related disease interventions. What makes this study particularly noteworthy is its novel approach to tracking individual mitochondria over extended periods, revealing previously unobserved patterns of deterioration that precede cellular senescence. The implications extend beyond basic research, pointing toward potential therapeutic strategies that could modify these pathways to promote cellular health and longevity in aging populations"
+
+
+def index(store, doc: Document) -> None:
     doc_embedder = HuggingFaceAPIDocumentEmbedder(
         api_type="serverless_inference_api",
         api_params={"model": "sentence-transformers/all-MiniLM-L6-v2"},
@@ -31,12 +35,10 @@ def index(store, rag_paragraph: Document) -> None:
     pipe.add_component("writer", writer)
     pipe.connect("embedder", "writer")
     print("running index...")
-    pipe.run({"embedder": {"documents": [rag_paragraph]}})
+    pipe.run({"embedder": {"documents": [doc]}})
 
 
-def query(store, query: str) -> str:
-    print("query count:", store.count_documents())
-    print("query avg:", store._avg_doc_len)
+def query(store) -> Pipeline:
     text_embedder = HuggingFaceAPITextEmbedder(
         api_type="serverless_inference_api",
         api_params={"model": "sentence-transformers/all-MiniLM-L6-v2"},
@@ -61,7 +63,12 @@ def query(store, query: str) -> str:
     pipe.connect("text_embed.embedding", "retriever.query_embedding")
     pipe.connect("retriever.documents", "prompt.documents")
     pipe.connect("prompt", "llm")
+    print("count doc:", store.count_documents())
+    print("count doc:", store._avg_doc_len)
+    return pipe
 
+
+def run_query_pipe(pipe: Pipeline, query: str) -> str:
     res = pipe.run({"text_embed": {"text": query}, "prompt": {"query": query}})
     return res["llm"]["replies"][0]
 
@@ -71,9 +78,8 @@ def main():
     rag_query = "What does the paper on biology talk about?"
     rag_paragraph = "A groundbreaking paper published in the Journal of Molecular Biology explores the intricate relationship between mitochondrial function and cellular aging. The researchers utilized advanced microscopy techniques to observe real-time changes in mitochondrial morphology as cells progress through their life cycle. Their findings suggest that specific proteins regulating mitochondrial fusion and fission play a crucial role in determining cellular lifespan, potentially offering new targets for age-related disease interventions. What makes this study particularly noteworthy is its novel approach to tracking individual mitochondria over extended periods, revealing previously unobserved patterns of deterioration that precede cellular senescence. The implications extend beyond basic research, pointing toward potential therapeutic strategies that could modify these pathways to promote cellular health and longevity in aging populations"
     index(store, Document(content=rag_paragraph))
-    print("count:", store.count_documents())
-    print("count 2:", store._avg_doc_len)
-    llm_answer = query(store, rag_query)
+    pipe = query(store)
+    llm_answer = run_query_pipe(pipe, rag_query)
     print(llm_answer)
 
 
