@@ -1,0 +1,24 @@
+name: format code, lints and run tests 
+
+on: [push]
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install deps
+      run: |
+          python -m pip install --upgrade pip 
+          pip install pytest ruff pylint
+    - name: Format with ruff 
+      run: |
+          ruff format .
+    - name: run tests
+      run: |
+          pytest .
+    - name: run pylint
+      run: |
+        export PYTHONPATH=$GITHUB_WORKSPACE 
+        pylint --fail-under=9.0 --disable=import-error src
