@@ -11,8 +11,8 @@ from haystack.components.retrievers import InMemoryEmbeddingRetriever
 from haystack.document_stores.in_memory import InMemoryDocumentStore
 from haystack.utils import Secret
 
-from src.pipelines.index_pipeline import index
-from src.prompts.naive_rag import template
+from src.assistant.pipelines.index_pipeline import index
+from src.assistant.prompts.naive_rag import template
 
 load_dotenv()
 

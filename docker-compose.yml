@@ -1,4 +1,17 @@
+
+
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: 
+      - .env
+    depends_on:
+      - postgres
+    networks:
+      - app_network
+
   postgres:
     image: postgres
     environment:
@@ -11,11 +24,11 @@ services:
       - postgres_data:/var/lib/postgresql/data 
       - ./src/web/database/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks: 
-     - postgres
+     - app_network 
     restart: unless-stopped
-  
+
 networks:
-  postgres:
+  app_network:
     driver: bridge
 
 volumes:

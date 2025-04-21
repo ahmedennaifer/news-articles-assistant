@@ -4,10 +4,10 @@ from haystack import Document, Pipeline, SuperComponent
 from haystack.components.routers import ConditionalRouter
 from haystack.document_stores.in_memory import InMemoryDocumentStore
 
-from components.query_classifier import get_query_classifier_pipeline
-from pipelines.index_pipeline import index
-from pipelines.rag_pipeline import query_pipeline
-from routes.query_classifier_routes import routes
+from assistant.components.query_classifier import get_query_classifier_pipeline
+from assistant.pipelines.index_pipeline import index
+from assistant.pipelines.rag_pipeline import query_pipeline
+from assistant.routes.query_classifier_routes import routes
 
 RAG_PARAGRAPH = "A groundbreaking paper published in the Journal of Molecular Biology explores the intricate relationship between mitochondrial function and cellular aging. The researchers utilized advanced microscopy techniques to observe real-time changes in mitochondrial morphology as cells progress through their life cycle. Their findings suggest that specific proteins regulating mitochondrial fusion and fission play a crucial role in determining cellular lifespan, potentially offering new targets for age-related disease interventions. What makes this study particularly noteworthy is its novel approach to tracking individual mitochondria over extended periods, revealing previously unobserved patterns of deterioration that precede cellular senescence. The implications extend beyond basic research, pointing toward potential therapeutic strategies that could modify these pathways to promote cellular health and longevity in aging populations"
 
