@@ -15,6 +15,7 @@ def get_weather(city: str) -> str:
 
 
 def WeatherTool(tool_params: dict = WEATHER_TOOL_PARAMS) -> Tool:
+    """returns a formatted Tool object"""
     return Tool(
         name="weather_tool",
         description="This tool fetches the current weather",

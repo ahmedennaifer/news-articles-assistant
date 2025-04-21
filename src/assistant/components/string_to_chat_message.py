@@ -1,3 +1,5 @@
+"""ChatMessage converter component"""
+
 from typing import List
 
 from haystack import component
