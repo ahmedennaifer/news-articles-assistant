@@ -6,13 +6,13 @@ from haystack.components.builders.prompt_builder import PromptBuilder
 from haystack.components.embedders.hugging_face_api_text_embedder import (
     HuggingFaceAPITextEmbedder,
 )
-from haystack.components.generators.openai import OpenAIGenerator
 from haystack.components.retrievers import InMemoryEmbeddingRetriever
 from haystack.document_stores.in_memory import InMemoryDocumentStore
 from haystack.utils import Secret
 
-from src.assistant.pipelines.index_pipeline import index
-from src.assistant.prompts.naive_rag import template
+from assistant.components.base_llm import get_base_llm
+from assistant.pipelines.index_pipeline import index
+from assistant.prompts.naive_rag import template
 
 load_dotenv()
 
@@ -30,19 +30,12 @@ def query_pipeline(store) -> Pipeline:
         token=Secret.from_env_var("HF_KEY"),
     )
 
-    llm = OpenAIGenerator(
-        api_key=Secret.from_env_var("GROQ_KEY"),
-        api_base_url="https://api.groq.com/openai/v1",
-        model="llama-3.3-70b-versatile",
-        generation_kwargs={"max_tokens": 512},
-    )
-
     prompt_builder = PromptBuilder(template=template, required_variables=["query"])
     retriever = InMemoryEmbeddingRetriever(store)
     pipe = Pipeline()
     pipe.add_component("retriever", retriever)
     pipe.add_component("prompt", prompt_builder)
-    pipe.add_component("llm", llm)
+    pipe.add_component("llm", get_base_llm())
     pipe.add_component("text_embed", text_embedder)
 
     pipe.connect("text_embed.embedding", "retriever.query_embedding")
