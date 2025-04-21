@@ -1,4 +1,4 @@
-agent_prompt = """
+AGENT_PROMPT = """
 you are a helpful assistant. you will get an input with a query and the relevant type.
 It's one of three: tool_query, db_query, general_query. 
 General query means its a general question that you can asnwer with your own data.

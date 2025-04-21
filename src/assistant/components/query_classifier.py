@@ -2,15 +2,12 @@
 
 from haystack import Pipeline, SuperComponent
 from haystack.components.builders import PromptBuilder
-from haystack.components.generators.openai import OpenAIGenerator
-from haystack.utils import Secret
-
-from assistant.prompts.query_classifier_prompt import query_classifier_prompt
+from assistant.prompts.query_classifier_prompt import QUERY_CLASSIFIER_PROMPT
 from assistant.components.base_llm import get_base_llm
 
 
 def get_query_classifier_pipeline(
-    template: str = query_classifier_prompt,
+    template: str = QUERY_CLASSIFIER_PROMPT,
 ) -> SuperComponent:
     """This is a pipeline that will be turned into a `SuperComponent`.
     It returns the query and its category, defined in the prompt.

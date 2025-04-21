@@ -2,7 +2,7 @@
 very naive prompt
 """
 
-template = """
+RAG_PROMPT = """
     Using the information contained in the context, give a comprehensive answer to the question.
     If the answer cannot be deduced from the context, do not give an answer.
 

@@ -4,7 +4,7 @@ from haystack import Document, Pipeline, SuperComponent
 from haystack.components.routers import ConditionalRouter
 from haystack.document_stores.in_memory import InMemoryDocumentStore
 from haystack.components.agents import Agent
-from assistant.prompts.agent import agent_prompt
+from assistant.prompts.agent import AGENT_PROMPT
 from assistant.components.query_classifier import get_query_classifier_pipeline
 from assistant.pipelines.index_pipeline import index
 from assistant.pipelines.rag_pipeline import query_pipeline
@@ -35,7 +35,7 @@ def main():
         Agent(
             chat_generator=get_base_chat_llm(),
             tools=[WeatherTool()],
-            system_prompt=agent_prompt,
+            system_prompt=AGENT_PROMPT,
         ),
     )
     pipe.add_component(

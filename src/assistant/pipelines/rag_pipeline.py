@@ -12,7 +12,7 @@ from haystack.utils import Secret
 
 from assistant.components.base_llm import get_base_llm
 from assistant.pipelines.index_pipeline import index
-from assistant.prompts.naive_rag import template
+from assistant.prompts.naive_rag import RAG_PROMPT
 
 load_dotenv()
 
@@ -30,7 +30,7 @@ def query_pipeline(store) -> Pipeline:
         token=Secret.from_env_var("HF_KEY"),
     )
 
-    prompt_builder = PromptBuilder(template=template, required_variables=["query"])
+    prompt_builder = PromptBuilder(template=RAG_PROMPT, required_variables=["query"])
     retriever = InMemoryEmbeddingRetriever(store)
     pipe = Pipeline()
     pipe.add_component("retriever", retriever)
