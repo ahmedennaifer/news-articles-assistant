@@ -1,17 +1,17 @@
 """entry point that groups all pipelines"""
 
 from haystack import Document, Pipeline, SuperComponent
+from haystack.components.agents import Agent
 from haystack.components.routers import ConditionalRouter
 from haystack.document_stores.in_memory import InMemoryDocumentStore
-from haystack.components.agents import Agent
-from assistant.prompts.agent import AGENT_PROMPT
-from assistant.components.query_classifier import get_query_classifier_pipeline
-from assistant.pipelines.index_pipeline import index
-from assistant.pipelines.rag_pipeline import query_pipeline
-from assistant.routes.query_classifier_routes import routes
-from assistant.components.string_to_chat_message import StringToChatMessage
 
 from assistant.components.base_llm import get_base_chat_llm
+from assistant.components.query_classifier import get_query_classifier_pipeline
+from assistant.components.string_to_chat_message import StringToChatMessage
+from assistant.pipelines.index_pipeline import index
+from assistant.pipelines.rag_pipeline import query_pipeline
+from assistant.prompts.agent import AGENT_PROMPT
+from assistant.routes.query_classifier_routes import routes
 from assistant.tools.dummy_tool import WeatherTool
 
 # TODO : connect agent to tool
@@ -57,7 +57,7 @@ def main():
     db_query = "What are our regional sales for Q4?"
     general_query = "What is the capital of Paris?"
 
-    queries = [tool_query, rag_query, db_query, general_query]
+    queries = [tool_query, rag_query]
     for q in queries:
         result = pipe.run(
             {
@@ -65,8 +65,10 @@ def main():
                 "router": {"query": q},
             }
         )
-
-        print(result)
+        if "agent" in result and result["agent"]:
+            print("Tool Assistant:", result["agent"]["messages"][-1]._content[0].text)
+        else:
+            print("Rag Assistant:", result["rag_pipe"]["replies"][0])
 
 
 if __name__ == "__main__":

@@ -10,9 +10,9 @@ from haystack.components.retrievers import InMemoryEmbeddingRetriever
 from haystack.document_stores.in_memory import InMemoryDocumentStore
 from haystack.utils import Secret
 
-from assistant.components.base_llm import get_base_llm
-from assistant.pipelines.index_pipeline import index
-from assistant.prompts.naive_rag import RAG_PROMPT
+from src.assistant.components.base_llm import get_base_llm
+from src.assistant.pipelines.index_pipeline import index
+from src.assistant.prompts.naive_rag import RAG_PROMPT
 
 load_dotenv()
 
@@ -62,7 +62,3 @@ def main():
     pipe = query_pipeline(store)
     llm_answer = run_query_pipe(pipe, rag_query)
     print(llm_answer)
-
-
-if __name__ == "__main__":
-    main()
