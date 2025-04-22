@@ -76,8 +76,8 @@ def main():
         if "agent" in result and result["agent"]:
             print(
                 f"{GREEN}Tool Assistant:{RESET}",
-                f"{result['agent']['messages'][-1]._content[0].text} \n",
-                f"Tool used: {result['agent']['messages'][-2]._content[0].origin}",
+                f"{result['agent']['messages'][-1]._content[0].text} \n",  # pylint: disable=protected-access
+                f"Tool used: {result['agent']['messages'][-2]._content[0].origin}",  # pylint: disable=protected-access
             )
         elif "rag_pipe" in result and result["rag_pipe"]:
             print(f"{YELLOW}Rag Assistant:{RESET}", result["rag_pipe"]["replies"][0])
