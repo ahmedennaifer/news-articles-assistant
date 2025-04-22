@@ -12,7 +12,8 @@ from assistant.pipelines.index_pipeline import index
 from assistant.pipelines.rag_pipeline import query_pipeline
 from assistant.prompts.agent import AGENT_PROMPT
 from assistant.routes.query_classifier_routes import routes
-from assistant.tools.dummy_tool import get_weather_tool
+from assistant.tools.dummy_tool import weather_tool
+from assistant.tools.db.read_from_db import read_from_db_tool
 
 # TODO : connect agent to tool
 RAG_PARAGRAPH = "A groundbreaking paper published in the Journal of Molecular Biology explores the intricate relationship between mitochondrial function and cellular aging. The researchers utilized advanced microscopy techniques to observe real-time changes in mitochondrial morphology as cells progress through their life cycle. Their findings suggest that specific proteins regulating mitochondrial fusion and fission play a crucial role in determining cellular lifespan, potentially offering new targets for age-related disease interventions. What makes this study particularly noteworthy is its novel approach to tracking individual mitochondria over extended periods, revealing previously unobserved patterns of deterioration that precede cellular senescence. The implications extend beyond basic research, pointing toward potential therapeutic strategies that could modify these pathways to promote cellular health and longevity in aging populations"
@@ -23,6 +24,7 @@ YELLOW = "\033[1;33m"
 RESET = "\033[0m"
 
 
+#
 def main():
     """testing"""
     store = InMemoryDocumentStore()
@@ -39,7 +41,7 @@ def main():
         "agent",
         Agent(
             chat_generator=get_base_chat_llm(),
-            tools=[get_weather_tool()],
+            tools=[weather_tool(), read_from_db_tool()],
             system_prompt=AGENT_PROMPT,
         ),
     )
@@ -55,14 +57,15 @@ def main():
     pipe.connect("classifier.replies", "router.replies")
     pipe.connect("router.rag_query", "rag_pipe.query")
     pipe.connect("router.tool_query", "string_to_chat_message.messages")
+
     pipe.connect("string_to_chat_message.messages", "agent.messages")
 
     tool_query = "What is the weather today in berlin?"
     rag_query = "What does the paper on biology talk about?"
-    # db_query = "What are our regional sales for Q4?"
+    db_query = "Can you show me the first lines of our database?"
     # general_query = "What is the capital of Paris?"
 
-    queries = [tool_query, rag_query]
+    queries = [tool_query, rag_query, db_query]
     for q in queries:
         result = pipe.run(
             {
@@ -70,13 +73,13 @@ def main():
                 "router": {"query": q},
             }
         )
-
         if "agent" in result and result["agent"]:
             print(
                 f"{GREEN}Tool Assistant:{RESET}",
-                result["agent"]["messages"][-1]._content[0].text,
+                f"{result['agent']['messages'][-1]._content[0].text} \n",
+                f"Tool used: {result['agent']['messages'][-2]._content[0].origin}",
             )
-        else:
+        elif "rag_pipe" in result and result["rag_pipe"]:
             print(f"{YELLOW}Rag Assistant:{RESET}", result["rag_pipe"]["replies"][0])
 
 

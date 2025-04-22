@@ -15,3 +15,7 @@ example:
 - system: llm routes query to -> `rag_query` -> queries rag pipeline -> returns answer
 - user: ok, can you compare it to tarrifs of 2019? 
 - system: llm routes query to -> `tool_use` -> websearch: query = trump china tarrifs 2019
+
+Execution example
+![Execution]("images/exec.png")
+

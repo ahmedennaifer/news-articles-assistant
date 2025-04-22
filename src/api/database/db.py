@@ -13,7 +13,7 @@ PW = os.environ.get("POSTGRES_PASSWORD", "pwd")
 DB = os.environ.get("POSTGRES_DB", "db")
 PORT = os.environ.get("POSTGRES_PORT", "5432")
 
-CONN_STR = f"postgresql://{USER}:{PW}@localhost:{PORT}/{DB}"
+CONN_STR = f"postgresql://{USER}:{PW}@postgres:{PORT}/{DB}"
 engine = create_engine(CONN_STR)
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()

@@ -10,7 +10,7 @@ services:
     depends_on:
       - postgres
     networks:
-      - app_network
+      - postgres 
 
   postgres:
     image: postgres
@@ -22,13 +22,13 @@ services:
      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data 
-      - ./src/web/database/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./src/api/database/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks: 
-     - app_network 
+     - postgres 
     restart: unless-stopped
 
 networks:
-  app_network:
+  postgres:
     driver: bridge
 
 volumes:
