@@ -24,13 +24,15 @@ def read_from_db_tool(tool_params: dict = READ_FROM_DB_TOOL_PARAMS) -> Tool:
     """returns a formatted Tool object"""
     return Tool(
         name="read_from_db_tool",
-        description="""This tool fetches data from the database through sql queries, you need to provide the sql according to the schema provided.
+        description="""This tool fetches data from the database through sql queries, \n
+        you need to provide the sql according to the schema provided.
         (the table is a collection of bbc articles with this format :
                     ( articles (
                     id SERIAL PRIMARY KEY,
                     title VARCHAR NOT NULL, 
                     category VARCHAR NOT NULL, 
-                    content TEXT NOT NULL) ), questions can be like: how many times is the word "usa" mentionned?, how many articles have the title "peace" etc...""",
+                    content TEXT NOT NULL) ), questions can be like: \n 
+                    how many times is the word "usa" mentionned?, how many articles have the title "peace" etc...""",
         parameters=tool_params,
         function=read_from_db,
     )
