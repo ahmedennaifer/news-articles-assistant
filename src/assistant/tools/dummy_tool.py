@@ -1,3 +1,5 @@
+"""dummy tool, will be replaced by actual tools"""
+
 from haystack.tools import Tool
 
 # TODO: rewrite better
@@ -14,7 +16,7 @@ def get_weather(city: str) -> str:
     return f" weather in {city} is 20 degrees celcius"
 
 
-def WeatherTool(tool_params: dict = WEATHER_TOOL_PARAMS) -> Tool:
+def get_weather_tool(tool_params: dict = WEATHER_TOOL_PARAMS) -> Tool:
     """returns a formatted Tool object"""
     return Tool(
         name="weather_tool",

@@ -12,10 +12,15 @@ from assistant.pipelines.index_pipeline import index
 from assistant.pipelines.rag_pipeline import query_pipeline
 from assistant.prompts.agent import AGENT_PROMPT
 from assistant.routes.query_classifier_routes import routes
-from assistant.tools.dummy_tool import WeatherTool
+from assistant.tools.dummy_tool import get_weather_tool
 
 # TODO : connect agent to tool
 RAG_PARAGRAPH = "A groundbreaking paper published in the Journal of Molecular Biology explores the intricate relationship between mitochondrial function and cellular aging. The researchers utilized advanced microscopy techniques to observe real-time changes in mitochondrial morphology as cells progress through their life cycle. Their findings suggest that specific proteins regulating mitochondrial fusion and fission play a crucial role in determining cellular lifespan, potentially offering new targets for age-related disease interventions. What makes this study particularly noteworthy is its novel approach to tracking individual mitochondria over extended periods, revealing previously unobserved patterns of deterioration that precede cellular senescence. The implications extend beyond basic research, pointing toward potential therapeutic strategies that could modify these pathways to promote cellular health and longevity in aging populations"
+
+
+GREEN = "\033[1;32m"
+YELLOW = "\033[1;33m"
+RESET = "\033[0m"
 
 
 def main():
@@ -34,7 +39,7 @@ def main():
         "agent",
         Agent(
             chat_generator=get_base_chat_llm(),
-            tools=[WeatherTool()],
+            tools=[get_weather_tool()],
             system_prompt=AGENT_PROMPT,
         ),
     )
@@ -54,8 +59,8 @@ def main():
 
     tool_query = "What is the weather today in berlin?"
     rag_query = "What does the paper on biology talk about?"
-    db_query = "What are our regional sales for Q4?"
-    general_query = "What is the capital of Paris?"
+    # db_query = "What are our regional sales for Q4?"
+    # general_query = "What is the capital of Paris?"
 
     queries = [tool_query, rag_query]
     for q in queries:
@@ -65,10 +70,14 @@ def main():
                 "router": {"query": q},
             }
         )
+
         if "agent" in result and result["agent"]:
-            print("Tool Assistant:", result["agent"]["messages"][-1]._content[0].text)
+            print(
+                f"{GREEN}Tool Assistant:{RESET}",
+                result["agent"]["messages"][-1]._content[0].text,
+            )
         else:
-            print("Rag Assistant:", result["rag_pipe"]["replies"][0])
+            print(f"{YELLOW}Rag Assistant:{RESET}", result["rag_pipe"]["replies"][0])
 
 
 if __name__ == "__main__":
