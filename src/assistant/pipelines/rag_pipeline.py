@@ -6,8 +6,10 @@ from haystack.components.builders.prompt_builder import PromptBuilder
 from haystack.components.embedders.hugging_face_api_text_embedder import (
     HuggingFaceAPITextEmbedder,
 )
-from haystack.components.retrievers import InMemoryEmbeddingRetriever
-from haystack.document_stores.in_memory import InMemoryDocumentStore
+
+from haystack_integrations.components.retrievers.qdrant import QdrantEmbeddingRetriever
+from assistant.vectordb.db import get_doc_store
+
 from haystack.utils import Secret
 
 from src.assistant.components.base_llm import get_base_llm
@@ -31,7 +33,7 @@ def query_pipeline(store) -> Pipeline:
     )
 
     prompt_builder = PromptBuilder(template=RAG_PROMPT, required_variables=["query"])
-    retriever = InMemoryEmbeddingRetriever(store)
+    retriever = QdrantEmbeddingRetriever(store)
     pipe = Pipeline()
     pipe.add_component("retriever", retriever)
     pipe.add_component("prompt", prompt_builder)
@@ -56,7 +58,7 @@ def run_query_pipe(pipe: Pipeline, query: str) -> str:
 
 def main():
     """testing"""
-    store = InMemoryDocumentStore()
+    store = get_doc_store(collection_name="testing")
     rag_query = "What does the paper on biology talk about?"
     index(store, Document(content=RAG_PARAGRAPH))
     pipe = query_pipeline(store)

@@ -7,6 +7,7 @@ from haystack.components.embedders.hugging_face_api_document_embedder import (
 )
 from haystack.components.writers import DocumentWriter
 from haystack.utils import Secret
+from haystack_integrations.components.retrievers.qdrant import QdrantEmbeddingRetriever
 
 load_dotenv()
 
