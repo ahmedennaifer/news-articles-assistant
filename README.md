@@ -17,5 +17,5 @@ example:
 - system: llm routes query to -> `tool_use` -> websearch: query = trump china tarrifs 2019
 
 Execution example
-![Execution]("images/exec.png")
+![Execution](images/exec.png)
 
