@@ -64,7 +64,7 @@ def main():
     db_query = "Can you show me the first lines of our database?"
     # general_query = "What is the capital of Paris?"
 
-    queries = [rag_query]
+    queries = [rag_query, tool_query, db_query]
     for q in queries:
         result = pipe.run(
             {
