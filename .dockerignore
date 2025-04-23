@@ -1,2 +1,4 @@
 .venv/
+steps.MD
+readme.MD
 qdrant_data/
