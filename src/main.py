@@ -13,8 +13,8 @@ from assistant.prompts.agent import AGENT_PROMPT
 from assistant.routes.query_classifier_routes import routes
 from assistant.tools.db.read_from_db import read_from_db_tool
 from assistant.tools.dummy_tool import weather_tool
+from assistant.tools.websearch_tool import web_search_tool
 from assistant.vectordb.db import get_doc_store
-
 
 RAG_PARAGRAPH = "A groundbreaking paper published in the Journal of Molecular Biology explores the intricate relationship between mitochondrial function and cellular aging. The researchers utilized advanced microscopy techniques to observe real-time changes in mitochondrial morphology as cells progress through their life cycle. Their findings suggest that specific proteins regulating mitochondrial fusion and fission play a crucial role in determining cellular lifespan, potentially offering new targets for age-related disease interventions. What makes this study particularly noteworthy is its novel approach to tracking individual mitochondria over extended periods, revealing previously unobserved patterns of deterioration that precede cellular senescence. The implications extend beyond basic research, pointing toward potential therapeutic strategies that could modify these pathways to promote cellular health and longevity in aging populations"
 
@@ -31,6 +31,7 @@ def main():
     query_pipe = query_pipeline(store)
     router = ConditionalRouter(routes)
     classifier_super_component = get_query_classifier_pipeline()
+
     # setup main pipeline, which consists of the query pipeline, and classifier pipeline of type `SuperComponent`. usefull for readability.
     pipe = Pipeline()
     pipe.add_component("router", router)
@@ -40,7 +41,7 @@ def main():
         "agent",
         Agent(
             chat_generator=get_base_chat_llm(),
-            tools=[weather_tool(), read_from_db_tool()],
+            tools=[weather_tool(), read_from_db_tool(), web_search_tool()],
             system_prompt=AGENT_PROMPT,
         ),
     )
@@ -62,9 +63,9 @@ def main():
     tool_query = "What is the weather today in berlin?"
     rag_query = "What does the paper on biology talk about?"
     db_query = "Can you show me the first lines of our database?"
-    # general_query = "What is the capital of Paris?"
+    web_search_query = "What is the approval rate for trump currently?"
 
-    queries = [rag_query, tool_query, db_query]
+    queries = [web_search_query, rag_query, tool_query, db_query]
     for q in queries:
         result = pipe.run(
             {
@@ -81,7 +82,7 @@ def main():
             )
         elif "rag_pipe" in result and result["rag_pipe"]:
             print(
-                f"{YELLOW}Query: {q}{RESET} \n",
+                f"{YELLOW}Query: {q}{RESET}\n",
             )
             print(f"{YELLOW}Rag Assistant:{RESET}\n", result["rag_pipe"]["replies"][0])
 

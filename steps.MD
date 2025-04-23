@@ -12,18 +12,20 @@ Todo:
       - [X] Connect routed query to db_tool 
       - [X] Connect routed query to general qa 
 
-  ### Index:
-  - [ ] Index all data with correct metada, and different steps
-      - [ ] Store all cells 
-      - [ ] experiment with different strats 
-        - [ ] HyDe 
-        - [ ] Different chunk sizes 
-        - [ ] evaluate
-      - [ ] metadata
 
-  - [ ] Setup baseline + mrr 
-    - [ ] Collect test data 
-    - [ ] Rapport 
+  ### Index:
+  - [ ] Index all data with correct metadata, and different steps
+      - [ ] Store all cells with metadata
+      - [ ] experiment with different strats (different chunks etc..)
+
+  - [ ] Retrieval
+        - [ ] baseline + mrr
+          - [ ] test data + examples
+          - [ ] calc mrr
+          - [ ] document findings
+        - [ ] HyDe 
+        - [ ] evaluate
+        - [ ] automatic metadata labeling + filtering
 
   - [ ] Make processing step better  
 

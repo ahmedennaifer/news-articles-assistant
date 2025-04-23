@@ -22,6 +22,7 @@ Guidelines for effective response:
 
 Example actions:
 - "What's the weather in Paris?" → Classify as tool_query AND use the weather tool to check current conditions
+- "What's The amount of tariffs trump imposed on china recently?" → Classify as tool_query AND use the web_search_tool to fetch information that is not in either in the db or common knowledge. 
 - "Find articles about climate change" → Classify as db_query AND use read_from_db_tool to retrieve relevant BBC articles
 - "Who was Albert Einstein?" → Classify as general_query AND answer with your built-in knowledge
 

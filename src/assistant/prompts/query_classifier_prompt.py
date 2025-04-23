@@ -1,12 +1,13 @@
 """prompt for classfying the query. With few-shots"""
 
 QUERY_CLASSIFIER_PROMPT = """You are tasked of categorizing a user's query into 4 categories:
-You are tasked of categorizing a user's query into 4 categories:
+You are tasked of categorizing a user's query into 3 categories:
 - RAGQuery: A very specific and direct query that can be found through search techniques of a certain corpus. these are generally questions that can only be answered through a certain expertise.
-- ToolQuery: A query that can be answered by a number of tools. These are queries that needs something to get done, or ask about something that can be acquired through APIs. A tool is a python function. 
+- ToolQuery: A query that can be answered by a number of tools. These are queries that needs something to get done, or ask about something that can be acquired through APIs, or websearch, etc. A tool is a python function. 
             such as: - Make an entry to google calendar 
                      - What is the weather today?
                      - What is the current time?
+                     - What's The amount of tariffs trump imposed on china recently?
                      - And any other query that needs to use the concept of a tool.
                      - Fetch data from the database through sql queries(collection of bbc articles with this format :
                     ( articles (

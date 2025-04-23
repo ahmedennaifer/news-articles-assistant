@@ -13,7 +13,7 @@ READ_FROM_DB_TOOL_PARAMS = {
 }
 
 
-def read_from_db(sql) -> Any:
+def _read_from_db(sql) -> Any:
     """executes raw sql into the db. very bad, and unsanitized"""  # TODO: rewrite better
     _session = get_db()
     res = _session.execute(statement=text(sql)).fetchall()
@@ -34,5 +34,5 @@ def read_from_db_tool(tool_params: dict = READ_FROM_DB_TOOL_PARAMS) -> Tool:
                     content TEXT NOT NULL) ), questions can be like: \n 
                     how many times is the word "usa" mentionned?, how many articles have the title "peace" etc...""",
         parameters=tool_params,
-        function=read_from_db,
+        function=_read_from_db,
     )

@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "docstring-parser>=0.16",
     "haystack-ai>=2.12.2",
     "huggingface-hub>=0.30.2",
     "mistral-haystack>=0.1.1",
