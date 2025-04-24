@@ -2,7 +2,7 @@
 
 from typing import List
 
-from haystack import Document, Pipeline, SuperComponent
+from haystack import Pipeline, SuperComponent
 from haystack.components.agents import Agent
 from haystack.components.routers import ConditionalRouter
 

@@ -5,6 +5,7 @@ from assistant.pipelines.main_pipeline import run_main_pipe
 
 def main() -> None:
     """testing"""
+
     tool_query = "What is the weather today in berlin?"
     rag_query = "What does the paper on biology talk about?"
     db_query = "Can you show me the first lines of our database?"
