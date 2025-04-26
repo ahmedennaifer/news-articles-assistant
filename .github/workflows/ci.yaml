@@ -42,5 +42,5 @@ jobs:
 
     - name: run tests
       run: |
-          docker compose run --rm app bash -c "PYTHONPATH=/app pytest . -v"
+          docker compose run --rm app bash -c "PYTHONPATH=/app uv run pytest . -v"
 
