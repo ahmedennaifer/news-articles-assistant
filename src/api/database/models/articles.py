@@ -16,4 +16,4 @@ class Articles(Base):
     content = Column(Text, nullable=False)
 
     def __repr__(self):
-        return f"<Article(title='{self.title}', category='{self.category}')"
+        return f"<Article(title='{self.title}', category='{self.category}', content='{self.content}')"

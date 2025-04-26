@@ -12,10 +12,10 @@ Todo:
       - [X] Connect routed query to db_tool 
       - [X] Connect routed query to general qa 
       - [X] Connect routed query to tool: web_search 
-  - [ ] write tests for assistant !!!  
 
 ### Index:
   - [ ] Index all data with correct metadata, and different steps
+      - [X] Store csv into RDB
       - [ ] Store all cells with metadata
       - [ ] experiment with different strats (different chunks etc..)
 
@@ -31,6 +31,7 @@ Todo:
   - [ ] Make processing step better  
 
   - [ ] write tests for indexing !!!  
+
 ### Setup infra and db
   - [X] DB 
   - [X] Docker/Docker comp

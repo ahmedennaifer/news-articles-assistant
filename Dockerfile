@@ -21,7 +21,7 @@ RUN apt-get update && \
 RUN . .virtualenv/bin/activate && \
   uv pip install -r requirements.txt  
 
-CMD ["/bin/bash", "-c", "PYTHONPATH=/app uv run src/main.py"]
+CMD ["/bin/bash", "-c", "PYTHONPATH=/app uv run src/api/etl/helpers/convert_to_article.py"]
 
 
 
