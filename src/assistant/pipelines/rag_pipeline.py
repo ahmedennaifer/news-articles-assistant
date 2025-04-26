@@ -1,7 +1,6 @@
 """main rag pipeline, still very naive"""
 
 from dotenv import load_dotenv
-
 from haystack import Pipeline
 from haystack.components.builders.prompt_builder import PromptBuilder
 from haystack.components.embedders.hugging_face_api_text_embedder import (
@@ -10,7 +9,6 @@ from haystack.components.embedders.hugging_face_api_text_embedder import (
 from haystack.utils import Secret
 from haystack_integrations.components.retrievers.qdrant import QdrantEmbeddingRetriever
 
-from src.assistant.vectordb.db import get_doc_store
 from src.assistant.components.retrieval_components.base_llm import get_base_llm
 from src.assistant.prompts.naive_rag import RAG_PROMPT
 
