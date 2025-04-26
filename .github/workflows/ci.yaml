@@ -37,7 +37,7 @@ jobs:
 
     - name: Run Docker Compose
       run: | 
-        docker-compose up -d 
+        docker compose up -d 
         sleep 10
 
     - name: run tests
