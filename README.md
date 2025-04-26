@@ -19,9 +19,9 @@ example:
 Execution example
 ![Execution](images/exec.png)
 
+-----------------------------------------
 
-Todo: 
-
+# Todo: 
 ### Assistant: 
   - [X] Refactor some bad code
   - [X] Get Basic rag with routing 
