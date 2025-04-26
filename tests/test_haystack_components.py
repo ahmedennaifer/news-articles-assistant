@@ -5,7 +5,8 @@ from src.assistant.components.indexing_components.csv_metadata_extractor import 
 
 def test_csv_metadat_extractor():
     csv = CSVMetadataExtractor()
-    docs = csv.run("data/final.csv")
+    docs_dict = csv.run("data/final.csv")
+    docs = [doc for doc in docs_dict["documents"]]
     assert (
         "Quarterly profits at US media giant TimeWarner jumped 76% to $1.13bn (£600m)"  # first sentence
         in docs[0].content
