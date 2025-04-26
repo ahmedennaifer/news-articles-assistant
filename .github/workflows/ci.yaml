@@ -20,7 +20,7 @@ jobs:
           uv venv .venv 
           source .venv/bin/activate
           uv pip install -r requirements.txt 
-          uv run pytest .
+          PYTHONPATH=$GITHUB_WORKSPACE uv run pytest .
     - name: run pylint
       run: |
         export PYTHONPATH=$GITHUB_WORKSPACE 
