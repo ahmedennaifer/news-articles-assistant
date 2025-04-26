@@ -11,7 +11,7 @@ from haystack.utils import Secret
 from haystack_integrations.components.retrievers.qdrant import QdrantEmbeddingRetriever
 
 from assistant.vectordb.db import get_doc_store
-from src.assistant.components.base_llm import get_base_llm
+from src.assistant.components.retrieval_components.base_llm import get_base_llm
 from src.assistant.pipelines.index_pipeline import index
 from src.assistant.prompts.naive_rag import RAG_PROMPT
 

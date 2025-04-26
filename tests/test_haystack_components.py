@@ -16,3 +16,4 @@ def test_csv_metadat_extractor():
     )
     assert docs[0].meta["category"] == "business"
     assert docs[0].meta["title"] == "Ad sales boost Time Warner profit"
+    assert len(docs) == 2138

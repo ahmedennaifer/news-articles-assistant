@@ -6,9 +6,13 @@ from haystack import Pipeline, SuperComponent
 from haystack.components.agents import Agent
 from haystack.components.routers import ConditionalRouter
 
-from assistant.components.base_llm import get_base_chat_llm
-from assistant.components.query_classifier import get_query_classifier_pipeline
-from assistant.components.string_to_chat_message import StringToChatMessage
+from assistant.components.retrieval_components.base_llm import get_base_chat_llm
+from assistant.components.retrieval_components.query_classifier import (
+    get_query_classifier_pipeline,
+)
+from assistant.components.retrieval_components.string_to_chat_message import (
+    StringToChatMessage,
+)
 from assistant.pipelines.rag_pipeline import query_pipeline
 from assistant.prompts.agent import AGENT_PROMPT
 from assistant.routes.query_classifier_routes import routes
@@ -71,7 +75,7 @@ def run_main_pipe(queries: List[str]) -> None:
                 f"{GREEN}Query: {q}{RESET}\n",
                 f"{GREEN}Tool Assistant:{RESET}",
                 f"{result['agent']['messages'][-1]._content[0].text} \n",  # pylint: disable=protected-access
-                f"Tool used: {result['agent']['messages'][-2]._content[0].origin}",  # pylint: disable=protected-access
+                f"Tool used: {result['agent']['messages'][-2]._content[0]}",  # pylint: disable=protected-access
             )
         elif "rag_pipe" in result and result["rag_pipe"]:
             print(

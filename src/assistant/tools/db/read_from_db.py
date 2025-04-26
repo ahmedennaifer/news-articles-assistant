@@ -16,8 +16,8 @@ READ_FROM_DB_TOOL_PARAMS = {
 def _read_from_db(sql) -> Any:
     """executes raw sql into the db. very bad, and unsanitized"""  # TODO: rewrite better
     _session = get_db()
-    res = _session.execute(statement=text(sql)).fetchall()
-    return res[0]
+    hits = _session.execute(statement=text(sql)).fetchall()
+    return hits
 
 
 def read_from_db_tool(tool_params: dict = READ_FROM_DB_TOOL_PARAMS) -> Tool:

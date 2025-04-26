@@ -3,7 +3,7 @@
 from haystack import Pipeline, SuperComponent
 from haystack.components.builders import PromptBuilder
 
-from assistant.components.base_llm import get_base_llm
+from assistant.components.retrieval_components.base_llm import get_base_llm
 from assistant.prompts.query_classifier_prompt import QUERY_CLASSIFIER_PROMPT
 
 
