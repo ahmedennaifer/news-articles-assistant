@@ -2,14 +2,14 @@
 
 import pandas as pd
 
-from src.api.database.models.articles import Articles
+from src.api.database.models.article import Article
 
 
-def convert_to_article(row: pd.Series) -> Articles:
+def convert_to_article(row: pd.Series) -> Article:
     """converts a `pd.Series` (row) into an `Articles` model
     :param row: from a loop through the df"""
 
     category = row["category"]
     title = row["title"]
     content = row["content"]
-    return Articles(category=category, title=title, content=content)
+    return Article(category=category, title=title, content=content)

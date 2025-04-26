@@ -3,12 +3,12 @@
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
-from src.api.database.models.articles import Articles
+from src.api.database.models.article import Article
 
 # TODO: add logging and remove prints
 
 
-def insert_in_db(article: Articles, session: Session) -> None:
+def insert_in_db(article: Article, session: Session) -> None:
     """inserts the article object into a db
     :param article: the Articles instance
     :param the sqlalchemy session

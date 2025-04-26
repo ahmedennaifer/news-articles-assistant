@@ -6,7 +6,7 @@ from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
 
-class Articles(Base):
+class Article(Base):
     """we omit filename, useless."""
 
     __tablename__ = "articles"
