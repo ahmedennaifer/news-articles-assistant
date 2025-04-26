@@ -32,9 +32,9 @@ def test_article_model():
     """Test Article model creation"""
     article = Article(category="tech", title="Test Title", content="Test Content")
 
-    assert article.category == "tech"
-    assert article.title == "Test Title"
-    assert article.content == "Test Content"
+    assert article.category == "tech"  # pyright: ignore
+    assert article.title == "Test Title"  # pyright: ignore
+    assert article.content == "Test Content"  # pyright: ignore
 
 
 def test_db_session(test_postgres_db):

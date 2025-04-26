@@ -39,9 +39,9 @@ def test_convert_to_article():
     article = convert_to_article(test_row)
 
     assert isinstance(article, Article)
-    assert article.category == "tech"
-    assert article.title == "Test Article"
-    assert article.content == "This is test content"
+    assert article.category == "tech"  # pyright: ignore
+    assert article.title == "Test Article"  # pyright: ignore
+    assert article.content == "This is test content"  # pyright: ignore
 
 
 def test_insert_in_db(test_postgres_db):
