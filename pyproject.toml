@@ -12,6 +12,7 @@ dependencies = [
     "pandas>=2.2.3",
     "pgvector-haystack>=3.2.0",
     "psycopg2>=2.9.10",
+    "pytest>=8.3.5",
     "python-dotenv>=1.1.0",
     "qdrant-haystack>=9.1.1",
     "sqlalchemy>=2.0.40",

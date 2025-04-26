@@ -21,7 +21,7 @@ RUN apt-get update && \
 RUN . .virtualenv/bin/activate && \
   uv pip install -r requirements.txt  
 
-CMD ["/bin/bash", "-c", "PYTHONPATH=/app uv run src/api/etl/ingest.py"]
+CMD ["/bin/bash", "-c", "PYTHONPATH=/app uv run pytest ."]
 
 
 

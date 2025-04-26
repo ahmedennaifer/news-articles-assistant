@@ -10,6 +10,7 @@ from sqlalchemy.orm import sessionmaker
 load_dotenv()
 USER = os.environ.get("POSTGRES_USER", "test")
 PW = os.environ.get("POSTGRES_PASSWORD", "pwd")
+
 DB = os.environ.get("POSTGRES_DB", "db")
 PORT = os.environ.get("POSTGRES_PORT", "5432")
 
