@@ -1,7 +1,7 @@
 """custom component that extracts info and populates metadata"""
 
 from haystack import component, Document
-from typing import List
+from typing import List, Dict
 import pandas as pd
 
 
@@ -24,11 +24,12 @@ class CSVMetadataExtractor:
         return Document(content=content, meta={"category": category, "title": title})  # pyright: ignore
 
     @component.output_types(documents=List[Document])
-    def run(self, source: str):
+    def run(self, source: str) -> Dict[str, List[Document]]:
         """entry point of the component
+        Note: must always return a dict !
         :param source: path of the csv"""
         df = pd.read_csv(source, delimiter=self.delimiter, header=self.header)  # pyright: ignore
         for _, row in df.iterrows():
             doc = self._extract_meta_from_row(row)
             self.docs.append(doc)
-        return self.docs
+        return {"documents": self.docs}

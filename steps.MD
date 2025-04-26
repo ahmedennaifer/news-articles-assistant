@@ -16,7 +16,7 @@ Todo:
 ### Index:
   - [ ] Index all data with correct metadata, and different steps
       - [X] Store csv into RDB
-      - [ ] Store all cells with metadata
+      - [X] Store all cells with metadata
       - [ ] experiment with different strats (different chunks etc..)
 
   - [ ] Retrieval
@@ -26,11 +26,9 @@ Todo:
             - [ ] document findings
         - [ ] HyDe 
         - [ ] evaluate
-        - [ ] automatic metadata labeling + filtering
+        - [ ] automatic metadata labeling + filtering(?)
 
   - [ ] Make processing step better  
-
-  - [ ] write tests for indexing !!!  
 
 ### Setup infra and db
   - [X] DB 
@@ -39,7 +37,10 @@ Todo:
 ### Tests !!! : 
 
   - [ ] Assistant 
+  - [X] DB
+  - [X] ETL 
   - [ ] Indexing  
-  - [ ] Eval and benchmarking 
-  - [ ] tests !!!!
+      - [X] CSVComponent
+      - ...
+
 

@@ -2,7 +2,7 @@
 
 from dotenv import load_dotenv
 
-from haystack import Document, Pipeline
+from haystack import Pipeline
 from haystack.components.builders.prompt_builder import PromptBuilder
 from haystack.components.embedders.hugging_face_api_text_embedder import (
     HuggingFaceAPITextEmbedder,
@@ -10,15 +10,11 @@ from haystack.components.embedders.hugging_face_api_text_embedder import (
 from haystack.utils import Secret
 from haystack_integrations.components.retrievers.qdrant import QdrantEmbeddingRetriever
 
-from assistant.vectordb.db import get_doc_store
+from src.assistant.vectordb.db import get_doc_store
 from src.assistant.components.retrieval_components.base_llm import get_base_llm
-from src.assistant.pipelines.index_pipeline import index
 from src.assistant.prompts.naive_rag import RAG_PROMPT
 
 load_dotenv()
-
-
-RAG_PARAGRAPH = "A groundbreaking paper published in the Journal of Molecular Biology explores the intricate relationship between mitochondrial function and cellular aging. The researchers utilized advanced microscopy techniques to observe real-time changes in mitochondrial morphology as cells progress through their life cycle. Their findings suggest that specific proteins regulating mitochondrial fusion and fission play a crucial role in determining cellular lifespan, potentially offering new targets for age-related disease interventions. What makes this study particularly noteworthy is its novel approach to tracking individual mitochondria over extended periods, revealing previously unobserved patterns of deterioration that precede cellular senescence. The implications extend beyond basic research, pointing toward potential therapeutic strategies that could modify these pathways to promote cellular health and longevity in aging populations"
 
 
 def query_pipeline(store) -> Pipeline:
@@ -53,13 +49,3 @@ def run_query_pipe(pipe: Pipeline, query: str) -> str:
     """
     res = pipe.run({"text_embed": {"text": query}, "prompt": {"query": query}})
     return res["llm"]["replies"][0]
-
-
-def main():
-    """testing"""
-    store = get_doc_store(collection_name="testing")
-    rag_query = "What does the paper on biology talk about?"
-    index(store, Document(content=RAG_PARAGRAPH))
-    pipe = query_pipeline(store)
-    llm_answer = run_query_pipe(pipe, rag_query)
-    print(llm_answer)
