@@ -1,17 +1,13 @@
 """not working, returns score of 0.0, should prob do custom mrr"""
 
 from typing import Dict, List
-
 from haystack import Document, Pipeline
 from haystack.components.embedders.hugging_face_api_text_embedder import (
     HuggingFaceAPITextEmbedder,
 )
-
-
 from haystack.components.evaluators import DocumentMRREvaluator
 from haystack.utils import Secret
 from haystack_integrations.components.retrievers.qdrant import QdrantEmbeddingRetriever
-
 from src.assistant.vectordb.db import get_doc_store
 
 
@@ -39,7 +35,6 @@ def retrieval_pipeline(store, query: str) -> List[Document]:
         api_params={"model": "sentence-transformers/all-MiniLM-L6-v2"},
         token=Secret.from_env_var("HF_KEY"),
     )
-
     retriever = QdrantEmbeddingRetriever(store, top_k=5)
     pipe = Pipeline()
     pipe.add_component("retriever", retriever)
@@ -50,11 +45,11 @@ def retrieval_pipeline(store, query: str) -> List[Document]:
 
 
 if __name__ == "__main__":
-    query = "Which legislation did Lord Scarman's pioneering work help establish according to Lord Woolf?"
+    query = "What was the specific athletic event in which Kelly Holmes won her Olympic gold medal that was voted as the top television moment of 2004, and which other sports moments did this victory surpass in the BBC poll?"
     ground_truth = [
         [
             Document(
-                content="Distinguished lawyer Lord Scarman, who conducted the inquiry into the 1981 Brixton riots, has died aged 93.  The peer enjoyed a celebrated judicial career, serving as Law Commission chairman in its first seven years. He also chaired the 1969 tribunal set up to investigate civil disturbances in Northern Ireland. Paying tribute, the Lord Chancellor Lord Falconer said Lord Scarman was one of the great advocates of our generation.  His legacy from his decisions in the Lords and the Court of Appeal is substantial. His work in the wake of the Brixton riots and his commitment to the vulnerable and dispossessed was second to none.  A great judge, a great lawyer and a great man. Lord Scarman's nephew George Ritchie said the peer, who passed away peacefully on Wednesday, would be sadly missed.  The Lord Chief Justice, Lord Woolf, who is the most senior judge in England and Wales, said it was Lord Scarman's pioneering work which paved the way for the Human Rights Act 1998. He was a lawyer and a judge who had a remarkable insight into human nature, and an exceptional sensitivity to the needs of a healthy society, he said. He was, personally, totally charming and he will be remembered with great affection and admiration by all who came into contact with him.  Dame Elizabeth Butler-Sloss, the president of the Family Justice Division, said Lord Scarman was a good and humane judge and one of the greatest figures of the late 20th century. Lord Scarman will be remembered for the public inquiry he led into a string of race riots which began in Brixton when racial tensions rose after a police crackdown on street robbery. During the following three days of disturbances that spread to the Midlands, Merseyside, Bristol and Leeds, nearly 400 people were injured and buildings and vehicles were set alight.  The inquiry famously settled on the so-called rotten apples theory, which argued that only a few police officers were racist, saying most were not. It spawned new law enforcement practices and led to the creation of the Police Complaints Authority. Trevor Phillips, chair of the Commission for Racial Equality, praised Lord Scarman's ability to listen. He said: When Lord Scarman toured the streets of Brixton his presence was electrifying. A community which had been systematically ignored by everyone else was suddenly embraced by the epitome of the English establishment. His great quality was the ability to listen to young people of all backgrounds, many of whose language he could barely understand, genuinely to hear what they had to say and to talk to them as human beings. He never lost the special combination of wisdom, humanity and the spark of radicalism that marked his watershed report into the Brixton riots."  # ruff: ignore
+                content="Sprinter Kelly Holmes' Olympic victory has been named the top television moment of 2004 in a BBC poll.  Holmes' 800m gold medal victory beat favourite moments from drama, comedy and factual programmes, as voted by television viewers. Natasha Kaplinsky's Strictly Come Dancing win was top entertainment moment and a Little Britain breast feeding sketch won the comedy prize. The 2004 TV Moments will be shown on BBC One at 2000 GMT on Wednesday. Double gold medal winner Holmes topped the best sports moment category, beating Maria Sharapova's Wimbledon triumph and Matthew Pinsent's rowing victory at the Olympics.  She then went on to take the overall prize of Golden TV Moment. The sight of former royal correspondent Jennie Bond with dozens of rats crawling over her in ITV's I'm a Celebrity Get Me Out of Here was named best factual entertainment moment. Michael Buerk's return to Ethiopia, 20 years after originally reporting its famine, topped the factual category for BBC programme This World. Long-running soap EastEnders won the best popular drama moment title when character Dot confided in Den Watts that she was unwell."
             )
         ],
     ]
@@ -68,3 +63,4 @@ if __name__ == "__main__":
     print("------------------------------------------")
     res = evaluation_pipeline(ground_truth, retrieved_documents)
     print("results:", res)
+

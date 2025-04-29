@@ -23,8 +23,8 @@ RUN . .virtualenv/bin/activate && \
   # huggingface_hub needs to be installed from source due to bug 
   uv pip install -r requirements.txt  
 
-CMD ["/bin/bash", "-c","PYTHONPATH=/app  uv run src/etl/ingest.py &&  PYTHONPATH=/app uv run src/main.py "] 
-# CMD ["/bin/bash", "-c","PYTHONPATH=/app  uv run src/assistant/evaluators/mrr_evaluator.py"] 
+# CMD ["/bin/bash", "-c","PYTHONPATH=/app  uv run src/etl/ingest.py &&  PYTHONPATH=/app uv run src/main.py "] 
+CMD ["/bin/bash", "-c","PYTHONPATH=/app  uv run src/assistant/evaluators/mrr_evaluator.py"] 
 
 
 
