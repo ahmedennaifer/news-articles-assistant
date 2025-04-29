@@ -1,7 +1,9 @@
 name: format code, lints and run tests 
 
-on: [push]
 
+on:
+  push:
+  workflow_dispatch:
 
 jobs:
   build:
@@ -42,5 +44,5 @@ jobs:
 
     - name: run tests
       run: |
-          docker compose run --rm app bash -c "PYTHONPATH=/app uv run pytest . -v"
+          docker compose run --rm app bash -c "PYTHONPATH=/assistant uv run pytest . -v"
 
