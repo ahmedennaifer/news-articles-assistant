@@ -1,7 +1,6 @@
-name: format code, lints and run tests 
+name: format code, lints and run tests on manual trigger
 
 on:
-  push:
   workflow_dispatch:
 
 jobs:
