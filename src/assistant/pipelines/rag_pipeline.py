@@ -26,7 +26,7 @@ def query_pipeline(store) -> Pipeline:
     )
 
     prompt_builder = PromptBuilder(template=RAG_PROMPT, required_variables=["query"])
-    retriever = QdrantEmbeddingRetriever(store)
+    retriever = QdrantEmbeddingRetriever(store, top_k=5)
     pipe = Pipeline()
     pipe.add_component("retriever", retriever)
     pipe.add_component("prompt", prompt_builder)

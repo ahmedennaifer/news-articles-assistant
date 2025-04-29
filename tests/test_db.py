@@ -1,12 +1,11 @@
 """Test database connection and model with PostgreSQL"""
 
 import pytest
-import os
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
 
-from src.api.database.db import get_db, CONN_STR
-from src.api.database.models.article import Article, Base
+from src.backend.database.db import CONN_STR
+from src.backend.database.models.article import Article
 
 
 @pytest.fixture
@@ -72,4 +71,3 @@ def test_db_query(test_postgres_db):
         test_postgres_db.query(Article).filter_by(title="Sports Update").first()
     )
     assert sports_article.category == "sports"
-

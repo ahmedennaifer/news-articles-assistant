@@ -3,7 +3,7 @@
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
-from src.api.database.models.article import Article
+from src.backend.database.models.article import Article
 
 # TODO: add logging and remove prints
 

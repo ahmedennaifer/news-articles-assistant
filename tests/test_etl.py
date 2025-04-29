@@ -5,10 +5,10 @@ import pandas as pd
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
 
-from src.api.database.db import CONN_STR
-from src.api.database.models.article import Article
-from src.api.etl.helpers.convert_to_article import convert_to_article
-from src.api.etl.helpers.insert_in_db import insert_in_db
+from src.backend.database.db import CONN_STR
+from src.backend.database.models.article import Article
+from src.etl.helpers.convert_to_article import convert_to_article
+from src.etl.helpers.insert_in_db import insert_in_db
 
 
 @pytest.fixture
@@ -95,4 +95,3 @@ def test_etl_workflow(test_postgres_db):
 
     titles = sorted([article.title for article in results])
     assert titles == ["Health Tips", "Science News"]
-

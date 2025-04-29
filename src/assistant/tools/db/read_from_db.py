@@ -4,7 +4,7 @@ from typing import Any
 
 from haystack.tools import Tool
 from sqlalchemy import text
-from src.api.database.db import get_db
+from src.backend.database.db import get_db
 
 READ_FROM_DB_TOOL_PARAMS = {
     "type": "object",

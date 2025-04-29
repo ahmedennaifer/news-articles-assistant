@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-from src.api.database.models.article import Article
+from src.backend.database.models.article import Article
 
 
 def convert_to_article(row: pd.Series) -> Article:

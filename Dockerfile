@@ -19,9 +19,12 @@ RUN apt-get update && \
   uv venv .virtualenv  
 
 RUN . .virtualenv/bin/activate && \
+  uv pip install git+https://github.com/huggingface/huggingface_hub && \
+  # huggingface_hub needs to be installed from source due to bug 
   uv pip install -r requirements.txt  
 
-CMD ["/bin/bash", "-c","PYTHONPATH=/app  uv run src/api/etl/ingest.py &&  PYTHONPATH=/app uv run src/main.py "] 
+CMD ["/bin/bash", "-c","PYTHONPATH=/app  uv run src/etl/ingest.py &&  PYTHONPATH=/app uv run src/main.py "] 
+# CMD ["/bin/bash", "-c","PYTHONPATH=/app  uv run src/assistant/evaluators/mrr_evaluator.py"] 
 
 
 

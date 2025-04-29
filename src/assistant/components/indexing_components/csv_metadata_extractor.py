@@ -1,18 +1,22 @@
 """custom component that extracts info and populates metadata"""
 
-from haystack import component, Document
-from typing import List, Dict
+from typing import Dict, List
+
 import pandas as pd
+from haystack import Document, component
 
 
 @component
 class CSVMetadataExtractor:
     """Component that takes a str path and returnes a list of `Document` with metadata"""
 
-    def __init__(self, delimiter=",", header="infer") -> None:
+    def __init__(
+        self, delimiter=",", header="infer", include_meta: bool = True
+    ) -> None:
         self.delimiter = delimiter
         self.header = header
-        self.docs: List[Document] = []
+        self.include_meta = include_meta
+        self._docs: List[Document] = []
 
     def _extract_meta_from_row(self, row: pd.Series) -> Document:
         """extract fields and store as meta
@@ -21,7 +25,12 @@ class CSVMetadataExtractor:
         content = row["content"]
         title = row["title"]
         category = row["category"]
-        return Document(content=content, meta={"category": category, "title": title})  # pyright: ignore
+        if self.include_meta:
+            return Document(
+                content=content,  # pyright: ignore
+                meta={"category": category, "title": title},
+            )
+        return Document(content=content)  # pyright: ignore
 
     @component.output_types(documents=List[Document])
     def run(self, source: str) -> Dict[str, List[Document]]:
@@ -31,5 +40,5 @@ class CSVMetadataExtractor:
         df = pd.read_csv(source, delimiter=self.delimiter, header=self.header)  # pyright: ignore
         for _, row in df.iterrows():
             doc = self._extract_meta_from_row(row)
-            self.docs.append(doc)
-        return {"documents": self.docs}
+            self._docs.append(doc)
+        return {"documents": self._docs}

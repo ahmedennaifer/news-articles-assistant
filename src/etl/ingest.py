@@ -3,9 +3,9 @@
 import pandas as pd
 from tqdm import tqdm
 
-from src.api.database.db import get_db
-from src.api.etl.helpers.convert_to_article import convert_to_article
-from src.api.etl.helpers.insert_in_db import insert_in_db
+from src.backend.database.db import get_db
+from src.etl.helpers.convert_to_article import convert_to_article
+from src.etl.helpers.insert_in_db import insert_in_db
 
 # TODO: add logging and remove prints
 

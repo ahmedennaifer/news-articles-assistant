@@ -45,6 +45,7 @@ Execution example
       - [ ] baseline + mrr
           - [ ] test data + examples
           - [ ] calc mrr
+              - [ ] write custom mrr component
           - [ ] document findings
       - [ ] HyDe 
       - [ ] evaluate
@@ -62,5 +63,3 @@ Execution example
   - [ ] Indexing  
       - [X] CSVComponent
       - ...
-
-
