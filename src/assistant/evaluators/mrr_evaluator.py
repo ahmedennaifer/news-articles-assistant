@@ -1,5 +1,7 @@
 """not working, returns score of 0.0, should prob do custom mrr"""
 
+import time
+
 from typing import Dict, List
 from haystack import Document, Pipeline
 from haystack.components.embedders.hugging_face_api_text_embedder import (
@@ -9,6 +11,11 @@ from haystack.components.evaluators import DocumentMRREvaluator
 from haystack.utils import Secret
 from haystack_integrations.components.retrievers.qdrant import QdrantEmbeddingRetriever
 from src.assistant.vectordb.db import get_doc_store
+
+from benchmarks.benchmark import Benchmark
+
+# ERROR/TODO : returns list of [0,0,0,0,0..]
+# IMPORTANT:
 
 
 def evaluation_pipeline(
@@ -45,22 +52,18 @@ def retrieval_pipeline(store, query: str) -> List[Document]:
 
 
 if __name__ == "__main__":
-    query = "What was the specific athletic event in which Kelly Holmes won her Olympic gold medal that was voted as the top television moment of 2004, and which other sports moments did this victory surpass in the BBC poll?"
-    ground_truth = [
-        [
-            Document(
-                content="Sprinter Kelly Holmes' Olympic victory has been named the top television moment of 2004 in a BBC poll.  Holmes' 800m gold medal victory beat favourite moments from drama, comedy and factual programmes, as voted by television viewers. Natasha Kaplinsky's Strictly Come Dancing win was top entertainment moment and a Little Britain breast feeding sketch won the comedy prize. The 2004 TV Moments will be shown on BBC One at 2000 GMT on Wednesday. Double gold medal winner Holmes topped the best sports moment category, beating Maria Sharapova's Wimbledon triumph and Matthew Pinsent's rowing victory at the Olympics.  She then went on to take the overall prize of Golden TV Moment. The sight of former royal correspondent Jennie Bond with dozens of rats crawling over her in ITV's I'm a Celebrity Get Me Out of Here was named best factual entertainment moment. Michael Buerk's return to Ethiopia, 20 years after originally reporting its famine, topped the factual category for BBC programme This World. Long-running soap EastEnders won the best popular drama moment title when character Dot confided in Den Watts that she was unwell."
-            )
-        ],
-    ]
-    retrieved_documents = [
-        retrieval_pipeline(get_doc_store(collection_name="testing"), query)
-    ]
-    print(len(ground_truth), len(retrieved_documents))
-    print("ground: ", ground_truth)
-    print("------------------------------------------")
-    print("retrieved: ", retrieved_documents)
-    print("------------------------------------------")
-    res = evaluation_pipeline(ground_truth, retrieved_documents)
-    print("results:", res)
+    bench = Benchmark()
 
+    retrieved_documents = []
+    for question in bench.df.question:
+        retrieved_documents.append(
+            retrieval_pipeline(get_doc_store(collection_name="testing"), question)
+        )
+        time.sleep(0.5)
+
+    """
+    df = question, ground, llm
+    -> fill llm col
+    """
+    df = bench.populate_with_llm_response(retrieved_documents)
+    df.to_csv("test_df.csv")

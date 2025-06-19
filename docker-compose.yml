@@ -5,15 +5,17 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    env_file: 
+    env_file:
       - .env
     depends_on:
       - postgres
     networks:
-      - postgres 
+      - postgres
+    volumes:
+      - assistant_data:/dump
 
   postgres:
-    image: postgres
+    image: postgres:alpine
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -21,10 +23,10 @@ services:
     ports:
     - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data 
+      - postgres_data:/var/lib/postgresql/data
       - ./src/backend/database/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks: 
-    - postgres 
+    networks:
+    - postgres
     restart: unless-stopped
 
   qdrant:
@@ -55,6 +57,7 @@ networks:
 
 volumes:
  postgres_data:
+ assistant_data:
 
 
 
