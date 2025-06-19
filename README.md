@@ -21,3 +21,5 @@ Execution example
 
 -----------------------------------------
 
+To run:
+`docker compose run -rm -it assistant` and ask your question.
