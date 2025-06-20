@@ -16,8 +16,7 @@ from assistant.components.retrieval_components.string_to_chat_message import (
 from assistant.pipelines.rag_pipeline import query_pipeline
 from assistant.prompts.agent import AGENT_PROMPT
 from assistant.routes.query_classifier_routes import routes
-from assistant.tools.db.read_from_db import read_from_db_tool
-from assistant.tools.dummy_tool import weather_tool
+from assistant.tools.read_from_db import read_from_db_tool
 from assistant.tools.websearch_tool import web_search_tool
 from assistant.vectordb.db import get_doc_store
 
@@ -43,7 +42,7 @@ def run_main_pipe(queries: List[str]) -> None:
         "agent",
         Agent(
             chat_generator=get_base_chat_llm(),
-            tools=[weather_tool(), read_from_db_tool(), web_search_tool()],
+            tools=[read_from_db_tool(), web_search_tool()],
             system_prompt=AGENT_PROMPT,
         ),
     )
@@ -75,7 +74,6 @@ def run_main_pipe(queries: List[str]) -> None:
                 f"{GREEN}Query: {q}{RESET}\n",
                 f"{GREEN}Tool Assistant:{RESET}",
                 f"{result['agent']['messages'][-1]._content[0].text} \n",  # pylint: disable=protected-access
-                f"Tool used: {result['agent']['messages'][-2]._content[0]}",  # pylint: disable=protected-access
             )
         elif "rag_pipe" in result and result["rag_pipe"]:
             print(

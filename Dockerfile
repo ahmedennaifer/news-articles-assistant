@@ -25,10 +25,8 @@ ENV POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 ENV POSTGRES_DB=${POSTGRES_DB}
 EXPOSE 5432
 
-CMD ["/bin/bash", "-c","PYTHONPATH=/app python src/assistant/evaluators/mrr_evaluator.py"]
+# CMD ["/bin/bash", "-c","PYTHONPATH=/app python src/assistant/evaluators/mrr_evaluator.py"]
 # CMD ["/bin/bash", "-c","PYTHONPATH=/app python src/etl/ingest.py"]
-
-# CMD ["/bin/bash", "-c","PYTHONPATH=/app python src/main.py"]
-
+CMD ["/bin/bash", "-c","PYTHONPATH=/app python src/main.py"]
 
 
