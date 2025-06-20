@@ -1,4 +1,4 @@
-"""not working, returns score of 0.0, should prob do custom mrr"""
+"""evaluation script"""
 
 import time
 
@@ -7,23 +7,21 @@ from haystack import Document, Pipeline
 from haystack.components.embedders.hugging_face_api_text_embedder import (
     HuggingFaceAPITextEmbedder,
 )
-from haystack.components.evaluators import DocumentMRREvaluator
 from haystack.utils import Secret
 from haystack_integrations.components.retrievers.qdrant import QdrantEmbeddingRetriever
 from src.assistant.vectordb.db import get_doc_store
 
-from benchmarks.benchmark import Benchmark
+from benchmarks.benchmark import Benchmarker
 
-# ERROR/TODO : returns list of [0,0,0,0,0..]
-# IMPORTANT:
+from src.assistant.components.evaluation_components.mrr_evaluator import MRREvaluator
 
 
 def evaluation_pipeline(
     ground_truth_documents: List[List[Document]],
     retrieved_documents: List[List[Document]],
-) -> List[Dict[str, float]]:
+) -> Dict[str, float]:
     pipeline = Pipeline()
-    mrr_evaluator = DocumentMRREvaluator()
+    mrr_evaluator = MRREvaluator()
     pipeline.add_component("mrr_evaluator", mrr_evaluator)
     result = pipeline.run(
         {
@@ -33,7 +31,7 @@ def evaluation_pipeline(
             },
         }
     )
-    return [result[evaluator] for evaluator in result]
+    return result["mrr_evaluator"]
 
 
 def retrieval_pipeline(store, query: str) -> List[Document]:
@@ -52,7 +50,7 @@ def retrieval_pipeline(store, query: str) -> List[Document]:
 
 
 if __name__ == "__main__":
-    bench = Benchmark()
+    bench = Benchmarker()
 
     retrieved_documents = []
     for question in bench.df.question:
@@ -61,9 +59,7 @@ if __name__ == "__main__":
         )
         time.sleep(0.5)
 
-    """
-    df = question, ground, llm
-    -> fill llm col
-    """
-    df = bench.populate_with_llm_response(retrieved_documents)
-    df.to_csv("test_df.csv")
+    result = evaluation_pipeline(bench._ground_truth, retrieved_documents)
+
+    print(f"MRR: {result['score']}")
+    print(f"individual MRR: {result['individual_scores']}")
