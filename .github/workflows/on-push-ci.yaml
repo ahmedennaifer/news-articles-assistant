@@ -34,12 +34,11 @@ jobs:
       with:
           version: latest
 
-    - name: Run Docker Compose
+    - name: Run Docker Compose & tests
       run: |
         docker compose up -d
         sleep 10
+        docker compose run --rm assistant bash -c "PYTHONPATH=/app uv run pytest . -v"
 
-    - name: run tests
-      run: |
-          docker compose run --rm assistant bash -c "PYTHONPATH=/app uv run pytest . -v"
+
 

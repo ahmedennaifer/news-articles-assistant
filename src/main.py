@@ -1,6 +1,6 @@
 """entry point that groups all pipelines"""
 
-from assistant.pipelines.main_pipeline import run_main_pipe
+from src.assistant.pipelines.main_pipeline import run_main_pipe
 import time
 
 

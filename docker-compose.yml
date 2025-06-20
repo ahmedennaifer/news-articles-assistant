@@ -13,6 +13,8 @@ services:
       - postgres
     volumes:
       - assistant_data:/dump
+    ports:
+    - "8000:8000"
 
   postgres:
     image: postgres:alpine
