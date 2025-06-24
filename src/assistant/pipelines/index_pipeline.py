@@ -41,7 +41,7 @@ def index(store, path: str) -> None:
 
 def main():
     """indexing runs seperately"""  # TODO: maybe fix
-    store = get_doc_store(collection_name="testing")
+    store = get_doc_store(collection_name="testing2")
     index(store, "data/final.csv")
 
 

@@ -9,6 +9,9 @@ from haystack.components.embedders.hugging_face_api_text_embedder import (
 )
 from haystack.utils import Secret
 from haystack_integrations.components.retrievers.qdrant import QdrantEmbeddingRetriever
+from haystack_integrations.components.rankers.cohere.ranker import CohereRanker
+
+
 from src.assistant.vectordb.db import get_doc_store
 
 from benchmarks.benchmark import Benchmarker
@@ -41,12 +44,22 @@ def retrieval_pipeline(store, query: str) -> List[Document]:
         token=Secret.from_env_var("HF_KEY"),
     )
     retriever = QdrantEmbeddingRetriever(store, top_k=5)
+    ranker = CohereRanker(top_k=5)
     pipe = Pipeline()
     pipe.add_component("retriever", retriever)
     pipe.add_component("text_embed", text_embedder)
+    pipe.add_component("ranker", ranker)
+
     pipe.connect("text_embed.embedding", "retriever.query_embedding")
-    res = pipe.run({"text_embed": {"text": query}})
-    return res["retriever"]["documents"]
+    pipe.connect("retriever.documents", "ranker.documents")
+
+    res = pipe.run(
+        {
+            "text_embed": {"text": query},
+            "ranker": {"query": query},
+        }
+    )
+    return res["ranker"]["documents"]
 
 
 if __name__ == "__main__":
@@ -55,9 +68,9 @@ if __name__ == "__main__":
     retrieved_documents = []
     for question in bench.df.question:
         retrieved_documents.append(
-            retrieval_pipeline(get_doc_store(collection_name="testing"), question)
+            retrieval_pipeline(get_doc_store(collection_name="testing2"), question)
         )
-        time.sleep(0.5)
+        time.sleep(10)
 
     result = evaluation_pipeline(bench._ground_truth, retrieved_documents)
 

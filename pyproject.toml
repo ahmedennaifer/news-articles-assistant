@@ -21,6 +21,7 @@ dependencies = [
     "fastapi>=0.115.13",
     "uvicorn>=0.34.3",
     "pydantic>=2.11.5",
+    "cohere-haystack>=5.0.0",
 ]
 
 [tool.uv.sources]

@@ -45,13 +45,12 @@ services:
         - 6334
         - 6335
       volumes:
-        - ./qdrant_data:/qdrant/storage:rw
+        - ./.qdrant_data:/qdrant/storage:rw
 
 configs:
   qdrant_config:
     content: |
       log_level: INFO
-
 
 networks:
   postgres:

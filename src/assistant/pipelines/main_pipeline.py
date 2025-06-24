@@ -25,10 +25,10 @@ YELLOW = "\033[1;33m"
 RESET = "\033[0m"
 
 
-def run_main_pipe(queries: List[str]) -> List[str]:
+def run_main_pipe(queries: List[str]) -> str:
     """main query that connects different pipelines and prints
     output to std and returns responses"""
-    store = get_doc_store(collection_name="testing")
+    store = get_doc_store(collection_name="testing2")
     query_pipe = query_pipeline(store)
     router = ConditionalRouter(routes)
     classifier_super_component = get_query_classifier_pipeline()
@@ -60,8 +60,6 @@ def run_main_pipe(queries: List[str]) -> List[str]:
     pipe.connect("router.tool_query", "string_to_chat_message.messages")
     pipe.connect("string_to_chat_message.messages", "agent.messages")
 
-    responses = []
-
     for q in queries:
         result = pipe.run(
             {
@@ -77,19 +75,13 @@ def run_main_pipe(queries: List[str]) -> List[str]:
                 f"{GREEN}Tool Assistant:{RESET}",
                 f"{response_text} \n",  # pylint: disable=protected-access
             )
-            responses.append(response_text)
+            return response_text
 
         elif "rag_pipe" in result and result["rag_pipe"]:
-            response_text = result["rag_pipe"]["replies"][0]
-            print(
-                f"{YELLOW}Query: {q}{RESET}\n",
-            )
-            print(f"{YELLOW}Rag Assistant:{RESET}\n", response_text)
-            responses.append(response_text)
+            llm_response = result["rag_pipe"]["replies"][0]
+            return llm_response
 
         else:
             error_msg = "No valid response generated"
             print(f"Error: {error_msg}")
-            responses.append(error_msg)
-
-    return responses
+            return error_msg
