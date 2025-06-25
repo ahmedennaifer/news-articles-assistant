@@ -41,3 +41,14 @@ Benchmark 3: Reranker + topk = 10
   -------------------------------------------------
   - MRR: 0.79
   - individual MRR: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.25, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 0.0, 0.0, 0.0]
+
+Thoughts:
+
+  Questions:
+    - "What was the book value of IMF gold reserves compared to their market value?",
+    - "Which country expressed the ability to veto plans to sell IMF gold?",
+    - "What did Gordon Brown call the meeting where G7 finance ministers backed debt relief plans?",
+  have 0 score
+
+
+

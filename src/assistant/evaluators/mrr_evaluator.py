@@ -11,7 +11,10 @@ from haystack.utils import Secret
 from haystack_integrations.components.retrievers.qdrant import QdrantEmbeddingRetriever
 from haystack_integrations.components.rankers.cohere.ranker import CohereRanker
 
-
+from src.assistant.prompts.metadata_labeller import metadata_labeller_prompt
+from src.assistant.components.retrieval_components.metadata_labeller import (
+    MetadataLabeller,
+)
 from src.assistant.vectordb.db import get_doc_store
 
 from benchmarks.benchmark import Benchmarker
@@ -49,13 +52,16 @@ def retrieval_pipeline(store, query: str) -> List[Document]:
     pipe.add_component("retriever", retriever)
     pipe.add_component("text_embed", text_embedder)
     pipe.add_component("ranker", ranker)
+    pipe.add_component("metadata_labeller", MetadataLabeller(metadata_labeller_prompt))
 
     pipe.connect("text_embed.embedding", "retriever.query_embedding")
+    pipe.connect("metadata_labeller.filters", "retriever.filters")
     pipe.connect("retriever.documents", "ranker.documents")
 
     res = pipe.run(
         {
             "text_embed": {"text": query},
+            "metadata_labeller": {"query": query},
             "ranker": {"query": query},
         }
     )
