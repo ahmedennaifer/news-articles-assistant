@@ -15,6 +15,12 @@ from src.assistant.prompts.metadata_labeller import metadata_labeller_prompt
 from src.assistant.components.retrieval_components.metadata_labeller import (
     MetadataLabeller,
 )
+
+
+from src.assistant.components.retrieval_components.hyde import (
+    HypotheticalDocumentEmbedder,
+)
+
 from src.assistant.vectordb.db import get_doc_store
 
 from benchmarks.benchmark import Benchmarker
@@ -46,21 +52,23 @@ def retrieval_pipeline(store, query: str) -> List[Document]:
         api_params={"model": "sentence-transformers/all-MiniLM-L6-v2"},
         token=Secret.from_env_var("HF_KEY"),
     )
-    retriever = QdrantEmbeddingRetriever(store, top_k=5)
+    retriever = QdrantEmbeddingRetriever(store, top_k=20)
     ranker = CohereRanker(top_k=5)
     pipe = Pipeline()
     pipe.add_component("retriever", retriever)
     pipe.add_component("text_embed", text_embedder)
     pipe.add_component("ranker", ranker)
     pipe.add_component("metadata_labeller", MetadataLabeller(metadata_labeller_prompt))
+    pipe.add_component("hyde", HypotheticalDocumentEmbedder())
 
-    pipe.connect("text_embed.embedding", "retriever.query_embedding")
+    pipe.connect("hyde.hyde_embeddings", "retriever.query_embedding")
     pipe.connect("metadata_labeller.filters", "retriever.filters")
     pipe.connect("retriever.documents", "ranker.documents")
 
     res = pipe.run(
         {
             "text_embed": {"text": query},
+            "hyde": {"query": query},
             "metadata_labeller": {"query": query},
             "ranker": {"query": query},
         }

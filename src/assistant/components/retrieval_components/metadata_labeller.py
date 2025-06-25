@@ -14,7 +14,7 @@ class MetadataLabeller:
         self.llm = get_base_llm()
         self.pipeline = Pipeline()
         self.prompt = prompt
-        self.prompt_builder = PromptBuilder(self.prompt)
+        self.prompt_builder = PromptBuilder(self.prompt, required_variables=["query"])
         self._setup_pipeline()
 
     def _setup_pipeline(self) -> None:
@@ -33,4 +33,3 @@ class MetadataLabeller:
                 {"field": "meta.category", "operator": "==", "value": field},
             ],
         }
-

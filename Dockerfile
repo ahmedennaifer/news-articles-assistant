@@ -36,10 +36,10 @@ ENV POSTGRES_DB=${POSTGRES_DB}
 EXPOSE 5432
 EXPOSE 8000
 
-# CMD ["/bin/bash", "-c","PYTHONPATH=/app python src/assistant/evaluators/mrr_evaluator.py"]
+CMD ["/bin/bash", "-c","PYTHONPATH=/app python src/assistant/evaluators/mrr_evaluator.py"]
 # CMD ["/bin/bash", "-c","PYTHONPATH=/app python src/etl/ingest.py"]
 # CMD ["/bin/bash", "-c","PYTHONPATH=/app python src/assistant/pipelines/index_pipeline.py"]
 # CMD ["/bin/bash", "-c","PYTHONPATH=/app python src/main.py"]
-CMD ["/bin/bash", "-c", "uvicorn src.backend.routes.main:app --host 0.0.0.0 --port 8000 --reload"]
+# CMD ["/bin/bash", "-c", "uvicorn src.backend.routes.main:app --host 0.0.0.0 --port 8000 --reload"]
 
 
