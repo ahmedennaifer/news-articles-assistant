@@ -25,7 +25,7 @@ YELLOW = "\033[1;33m"
 RESET = "\033[0m"
 
 
-def run_main_pipe(queries: List[str]) -> str:
+def run_main_pipe(query: str) -> str:
     """main query that connects different pipelines and prints
     output to std and returns responses"""
     store = get_doc_store(collection_name="testing2")
@@ -51,7 +51,12 @@ def run_main_pipe(queries: List[str]) -> str:
         SuperComponent(
             query_pipe,
             input_mapping={
-                "query": ["text_embed.text", "prompt.query"],
+                "query": [
+                    "text_embed.text",
+                    "metadata_labeller.query",
+                    "prompt.query",
+                    "ranker.query",
+                ]
             },
         ),
     )
@@ -60,28 +65,27 @@ def run_main_pipe(queries: List[str]) -> str:
     pipe.connect("router.tool_query", "string_to_chat_message.messages")
     pipe.connect("string_to_chat_message.messages", "agent.messages")
 
-    for q in queries:
-        result = pipe.run(
-            {
-                "classifier": {"query": q},
-                "router": {"query": q},
-            }
+    result = pipe.run(
+        {
+            "classifier": {"query": query},
+            "router": {"query": query},
+        }
+    )
+
+    if "agent" in result and result["agent"]:
+        response_text = result["agent"]["messages"][-1]._content[0].text
+        print(
+            f"{GREEN}Query: {query}{RESET}\n",
+            f"{GREEN}Tool Assistant:{RESET}",
+            f"{response_text} \n",  # pylint: disable=protected-access
         )
+        return response_text
 
-        if "agent" in result and result["agent"]:
-            response_text = result["agent"]["messages"][-1]._content[0].text
-            print(
-                f"{GREEN}Query: {q}{RESET}\n",
-                f"{GREEN}Tool Assistant:{RESET}",
-                f"{response_text} \n",  # pylint: disable=protected-access
-            )
-            return response_text
+    elif "rag_pipe" in result and result["rag_pipe"]:
+        llm_response = result["rag_pipe"]["replies"][0]
+        return llm_response
 
-        elif "rag_pipe" in result and result["rag_pipe"]:
-            llm_response = result["rag_pipe"]["replies"][0]
-            return llm_response
-
-        else:
-            error_msg = "No valid response generated"
-            print(f"Error: {error_msg}")
-            return error_msg
+    else:
+        error_msg = "No valid response generated"
+        print(f"Error: {error_msg}")
+        return error_msg

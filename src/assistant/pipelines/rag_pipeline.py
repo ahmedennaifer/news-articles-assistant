@@ -12,30 +12,42 @@ from haystack_integrations.components.retrievers.qdrant import QdrantEmbeddingRe
 from src.assistant.components.retrieval_components.base_llm import get_base_llm
 from src.assistant.prompts.naive_rag import RAG_PROMPT
 
+
+from haystack_integrations.components.rankers.cohere.ranker import CohereRanker
+
+from src.assistant.prompts.metadata_labeller import metadata_labeller_prompt
+from src.assistant.components.retrieval_components.metadata_labeller import (
+    MetadataLabeller,
+)
+
 load_dotenv()
 
 
 def query_pipeline(store) -> Pipeline:
-    """returns the query pipeline, which returns the response of the llm according to the context given by the `store` through the retriver.
-    :param store: vector store which stores the embeddings of ours docs"""
-
     text_embedder = HuggingFaceAPITextEmbedder(
         api_type="serverless_inference_api",
         api_params={"model": "sentence-transformers/all-MiniLM-L6-v2"},
         token=Secret.from_env_var("HF_KEY"),
     )
-
+    retriever = QdrantEmbeddingRetriever(store, top_k=20)
+    ranker = CohereRanker(top_k=5)
     prompt_builder = PromptBuilder(template=RAG_PROMPT, required_variables=["query"])
-    retriever = QdrantEmbeddingRetriever(store, top_k=5)
+
     pipe = Pipeline()
+
     pipe.add_component("retriever", retriever)
+    pipe.add_component("metadata_labeller", MetadataLabeller(metadata_labeller_prompt))
     pipe.add_component("prompt", prompt_builder)
     pipe.add_component("llm", get_base_llm())
     pipe.add_component("text_embed", text_embedder)
+    pipe.add_component("ranker", ranker)
 
     pipe.connect("text_embed.embedding", "retriever.query_embedding")
-    pipe.connect("retriever.documents", "prompt.documents")
+    pipe.connect("metadata_labeller.filters", "retriever.filters")
+    pipe.connect("retriever.documents", "ranker.documents")
+    pipe.connect("ranker.documents", "prompt.documents")
     pipe.connect("prompt", "llm")
+
     return pipe
 
 
@@ -45,5 +57,13 @@ def run_query_pipe(pipe: Pipeline, query: str) -> str:
     :param pipe: haystack `Pipeline`
     :param query: question of the user
     """
-    res = pipe.run({"text_embed": {"text": query}, "prompt": {"query": query}})
+
+    res = pipe.run(
+        {
+            "metadata_labeller": {"query": query},
+            "text_embed": {"text": query},
+            "ranker": {"query": query},
+            "prompt": {"query": query},
+        }
+    )
     return res["llm"]["replies"][0]

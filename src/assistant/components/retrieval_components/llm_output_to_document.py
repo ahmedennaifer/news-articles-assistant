@@ -10,5 +10,5 @@ class LLMOutputToDocument:
 
     @component.output_types(documents=List[Document])
     def run(self, messages: List[str]):
-        """converts a string input into a `ChatMessage`format that is expected for agent messages"""
+        """converts a list of strings input into a Document"""
         return {"documents": [Document(content=message) for message in messages]}

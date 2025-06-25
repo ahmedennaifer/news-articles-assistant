@@ -3,6 +3,12 @@ from src.assistant.pipelines.main_pipeline import run_main_pipe
 
 from fastapi.middleware.cors import CORSMiddleware
 
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__file__)
+
+
 app = FastAPI()
 
 
@@ -21,5 +27,6 @@ app.add_middleware(
 async def generate(message: str):
     if message == "":
         raise ValueError("Message cannot be empty")
-    response = run_main_pipe([message])
+    logger.info(f"Got: {message}")
+    response = run_main_pipe(message)
     return {"response": response}

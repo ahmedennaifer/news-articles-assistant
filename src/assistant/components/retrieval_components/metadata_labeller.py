@@ -23,7 +23,7 @@ class MetadataLabeller:
         self.pipeline.connect("prompt_builder", "llm")
 
     @component.output_types(filters=Dict[str, str])
-    def run(self, query):
+    def run(self, query: str):
         result = self.pipeline.run({"prompt_builder": {"query": query}})
 
         field = result["llm"]["replies"][0]
@@ -33,3 +33,4 @@ class MetadataLabeller:
                 {"field": "meta.category", "operator": "==", "value": field},
             ],
         }
+
