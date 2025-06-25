@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, Sparkles } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 
 const ChatInterface = () => {
   const [messages, setMessages] = useState([
@@ -98,6 +99,81 @@ const ChatInterface = () => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
+  // Custom components for markdown rendering
+  const markdownComponents = {
+    // Headers
+    h1: ({children}) => <h1 className="text-xl font-bold text-white mb-3 mt-4">{children}</h1>,
+    h2: ({children}) => <h2 className="text-lg font-bold text-white mb-2 mt-3">{children}</h2>,
+    h3: ({children}) => <h3 className="text-base font-bold text-white mb-2 mt-2">{children}</h3>,
+
+    // Paragraphs
+    p: ({children}) => <p className="text-white text-sm leading-relaxed mb-2">{children}</p>,
+
+    // Lists
+    ul: ({children}) => <ul className="list-disc list-inside text-white text-sm mb-2 ml-4">{children}</ul>,
+    ol: ({children}) => <ol className="list-decimal list-inside text-white text-sm mb-2 ml-4">{children}</ol>,
+    li: ({children}) => <li className="mb-1">{children}</li>,
+
+    // Code
+    code: ({inline, children}) => {
+      if (inline) {
+        return <code className="bg-black/30 text-blue-200 px-1 py-0.5 rounded text-xs font-mono">{children}</code>;
+      }
+      return (
+        <pre className="bg-black/30 text-blue-200 p-3 rounded-lg overflow-x-auto mb-2 mt-2">
+          <code className="text-xs font-mono">{children}</code>
+        </pre>
+      );
+    },
+
+    // Blockquotes
+    blockquote: ({children}) => (
+      <blockquote className="border-l-4 border-blue-400 pl-4 italic text-white/80 mb-2 mt-2">
+        {children}
+      </blockquote>
+    ),
+
+    // Links
+    a: ({href, children}) => (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-300 hover:text-blue-200 underline"
+      >
+        {children}
+      </a>
+    ),
+
+    // Strong/Bold
+    strong: ({children}) => <strong className="font-bold text-white">{children}</strong>,
+
+    // Emphasis/Italic
+    em: ({children}) => <em className="italic text-white/90">{children}</em>,
+
+    // Tables
+    table: ({children}) => (
+      <div className="overflow-x-auto mb-2 mt-2">
+        <table className="min-w-full border-collapse border border-white/20">
+          {children}
+        </table>
+      </div>
+    ),
+    th: ({children}) => (
+      <th className="border border-white/20 bg-white/10 px-3 py-2 text-left text-white font-semibold text-xs">
+        {children}
+      </th>
+    ),
+    td: ({children}) => (
+      <td className="border border-white/20 px-3 py-2 text-white text-xs">
+        {children}
+      </td>
+    ),
+
+    // Horizontal rule
+    hr: () => <hr className="border-white/20 my-4" />,
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 flex">
       {/* Animated background elements */}
@@ -155,10 +231,21 @@ const ChatInterface = () => {
                     ? 'bg-gradient-to-r from-blue-600 to-teal-600'
                     : 'bg-white/10 backdrop-blur-sm border border-white/20'
                 } rounded-2xl px-4 py-3 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02]`}>
-                  <p className="text-white text-sm leading-relaxed whitespace-pre-wrap">
-                    {message.content}
-                  </p>
-                  <span className="text-xs text-white/50 mt-1 block">
+
+                  {/* Message Content with Markdown Support */}
+                  <div className="prose prose-invert prose-sm max-w-none">
+                    {message.type === 'user' ? (
+                      <p className="text-white text-sm leading-relaxed whitespace-pre-wrap mb-0">
+                        {message.content}
+                      </p>
+                    ) : (
+                      <ReactMarkdown components={markdownComponents}>
+                        {message.content}
+                      </ReactMarkdown>
+                    )}
+                  </div>
+
+                  <span className="text-xs text-white/50 mt-2 block">
                     {formatTime(message.timestamp)}
                   </span>
 
@@ -266,6 +353,20 @@ const ChatInterface = () => {
         /* Auto-resize textarea */
         textarea {
           field-sizing: content;
+        }
+
+        /* Custom markdown styles */
+        .prose {
+          color: inherit;
+        }
+
+        .prose p:last-child {
+          margin-bottom: 0;
+        }
+
+        .prose ul:last-child,
+        .prose ol:last-child {
+          margin-bottom: 0;
         }
       `}</style>
     </div>

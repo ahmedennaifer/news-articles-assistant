@@ -22,7 +22,7 @@ def get_base_chat_llm() -> OpenAIChatGenerator:
     very basic groq generator
     """
     return OpenAIChatGenerator(
-        # streaming_callback=lambda chunk: print(chunk.content, end="", flush=True),
+        # streaming_callback=lambda chunk: print(chunk.content, end=", flush=True),
         api_key=Secret.from_env_var("GROQ_KEY"),
         api_base_url="https://api.groq.com/openai/v1",
         model="llama-3.3-70b-versatile",

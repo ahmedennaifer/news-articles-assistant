@@ -52,8 +52,8 @@ def run_main_pipe(query: str) -> str:
             query_pipe,
             input_mapping={
                 "query": [
-                    "text_embed.text",
                     "metadata_labeller.query",
+                    "text_embed.text",
                     "prompt.query",
                     "ranker.query",
                 ]

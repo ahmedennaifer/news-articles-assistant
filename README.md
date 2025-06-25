@@ -18,6 +18,7 @@ example:
 
 Execution example
 ![Execution](images/exec.png)
+![UI](images/ui.png)
 
 -----------------------------------------
 
@@ -51,9 +52,9 @@ To run:
           - [X] calc mrr
               - [X] write custom mrr component
           - [X] document findings
-      - [ ] HyDe
-      - [ ] evaluate
-      - [ ] automatic metadata labeling + filtering(?)
+      - [X] HyDe
+      - [X] evaluate
+      - [X] automatic metadata labeling + filtering(?)
 
 ### Setup infra and db
   - [X] DB
