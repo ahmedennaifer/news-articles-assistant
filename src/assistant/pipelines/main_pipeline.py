@@ -2,9 +2,10 @@
 
 from typing import List
 
-from haystack import Pipeline, SuperComponent
+from haystack import Pipeline, SuperComponent, Document
 from haystack.components.agents import Agent
 from haystack.components.routers import ConditionalRouter
+from haystack.components.joiners.branch import BranchJoiner
 
 from src.assistant.components.retrieval_components.base_llm import get_base_chat_llm
 from src.assistant.components.retrieval_components.query_classifier import (
@@ -37,6 +38,7 @@ def run_main_pipe(query: str) -> str:
     pipe = Pipeline()
     pipe.add_component("router", router)
     pipe.add_component("classifier", classifier_super_component)
+    pipe.add_component("joiner", BranchJoiner(type_=str))
     pipe.add_component("string_to_chat_message", StringToChatMessage())
     pipe.add_component(
         "agent",
@@ -60,9 +62,12 @@ def run_main_pipe(query: str) -> str:
             },
         ),
     )
+
     pipe.connect("classifier.replies", "router.replies")
     pipe.connect("router.rag_query", "rag_pipe.query")
-    pipe.connect("router.tool_query", "string_to_chat_message.messages")
+    pipe.connect("router.tool_query", "joiner")
+    pipe.connect("router.general_query", "joiner")
+    pipe.connect("joiner", "string_to_chat_message")
     pipe.connect("string_to_chat_message.messages", "agent.messages")
 
     result = pipe.run(
