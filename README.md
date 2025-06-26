@@ -41,12 +41,12 @@ To run:
       - [X] Connect routed query to tool: web_search
 
 ### Index:
-  - [ ] Index all data with correct metadata, and different steps
+  - [X] Index all data with correct metadata, and different steps
       - [X] Store csv into RDB
       - [X] Store all cells with metadataAdd commentMore actions
-      - [ ] experiment with different strats (different chunks etc..)
+      - [-] experiment with different strats (different chunks etc..)
 
-  - [ ] Retrieval
+  - [X] Retrieval
       - [X] baseline + mrr
           - [X] test data + examples
           - [X] calc mrr
@@ -64,6 +64,6 @@ To run:
   - [ ] Assistant
   - [X] DB
   - [X] ETL
-  - [ ] Indexing
+  - [X] Indexing
       - [X] CSVComponent
       - ...
