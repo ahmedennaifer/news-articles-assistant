@@ -11,6 +11,7 @@ from haystack.utils import Secret
 from haystack_integrations.components.retrievers.qdrant import QdrantEmbeddingRetriever
 from haystack_integrations.components.rankers.cohere.ranker import CohereRanker
 
+from src.assistant.components.retrieval_components.query_expander import QueryExpander
 from src.assistant.prompts.metadata_labeller import metadata_labeller_prompt
 from src.assistant.components.retrieval_components.metadata_labeller import (
     MetadataLabeller,
@@ -54,7 +55,9 @@ def retrieval_pipeline(store, query: str) -> List[Document]:
     )
     retriever = QdrantEmbeddingRetriever(store, top_k=20)
     ranker = CohereRanker(top_k=5)
+    expander = QueryExpander()
     pipe = Pipeline()
+    pipe.add_component("expander", expander)
     pipe.add_component("retriever", retriever)
     pipe.add_component("text_embed", text_embedder)
     pipe.add_component("ranker", ranker)

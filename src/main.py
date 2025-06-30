@@ -10,7 +10,7 @@ def main() -> None:
         while True:
             query = input("Ask your question\n > ")
             print("Thinking...\n")
-            run_main_pipe(queries=[query])
+            run_main_pipe(query=query)
     except KeyboardInterrupt:
         print("\nBye!")
         time.sleep(0.5)
